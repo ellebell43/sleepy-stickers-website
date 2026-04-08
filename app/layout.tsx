@@ -1,5 +1,7 @@
 import "./globals.css";
 import localFont from 'next/font/local'
+import Image from "next/image";
+import Link from "next/link";
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
 
@@ -13,9 +15,18 @@ export default function RootLayout({
       lang="en"
       className={`h-full ${fontAseprite.className}`}
     >
-      <body className={`min-h-full w-full flex flex-col max-w-500 mx-auto ${fontAseprite.className}`}>
-        <header className="w-full border px-5">
-          <p>header</p>
+      <body className={`min-h-full w-full flex flex-col max-w-500 mx-auto antialiased ${fontAseprite.className}`}>
+        <header className="w-full border px-5 flex">
+          {/* ==========  ABOUT LINK ========== */}
+          {/* ========== GALLERY LINK ========== */}
+          {/* ========== SHOP LINK ========== */}
+          {/* ========== CART LINK ========== */}
+          <Link href="#/cart" className="relative">
+            <div className="flex items-center">
+              <p className="text-sm relative top-1">0</p>
+              <Image src="/images/cart.png" alt="Shopping Cart" className="dark:invert" height={16 * 2} width={16 * 2} />
+            </div>
+          </Link>
         </header>
         {children}
       </body>
