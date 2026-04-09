@@ -16,10 +16,13 @@ export default function RootLayout({
       className={`h-full ${fontAseprite.className}`}
     >
       <body className={`min-h-full w-full flex flex-col max-w-500 mx-auto antialiased ${fontAseprite.className}`}>
-        <header className="w-full border px-5 flex">
+        <header className="w-full px-5 flex justify-between shadow-md py-2 fixed z-10">
           {/* ==========  ABOUT LINK ========== */}
           {/* ========== GALLERY LINK ========== */}
           {/* ========== SHOP LINK ========== */}
+          <Link href="#/shop">
+            <Image src="/images/shop.png" alt="Shop" className="dark:invert" height={16 * 2} width={16 * 2} />
+          </Link>
           {/* ========== CART LINK ========== */}
           <Link href="#/cart" className="relative">
             <div className="flex items-center">
@@ -28,7 +31,9 @@ export default function RootLayout({
             </div>
           </Link>
         </header>
-        {children}
+        <main className="py-12">
+          {children}
+        </main>
       </body>
     </html>
   );
