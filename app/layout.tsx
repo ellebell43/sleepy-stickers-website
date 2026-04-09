@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={`min-h-full w-full flex flex-col mx-auto antialiased transition-all ${fontAseprite.className}`}>
         <header className="w-full px-5 flex justify-center gap-12 md:gap-8 shadow-md pb-2 pt-3 fixed z-10">
           {/* ========== SHOP LINK ========== */}
-          <Link href="#/shop" className="hover:opacity-70 transition-all">
+          <Link href="/shop" className="hover:opacity-70 transition-all">
             <div className="flex items-center">
               <Image src="/images/shop.png" alt="A store front icon on a 16x16 pixel art canvas using just simple black lines" title="Shop" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
               <p className="ml-1 hidden md:block">Shop</p>
@@ -49,7 +49,7 @@ export default function RootLayout({
             </div>
           </Link>
         </header>
-        <main className="py-12 px-4 w-full min-h-screen">
+        <main className="pt-16 px-4 w-full min-h-screen">
           {children}
         </main>
       </body>
