@@ -19,13 +19,25 @@ export default function RootLayout({
     >
       <body className={`min-h-full w-full flex flex-col max-w-500 mx-auto antialiased transition-all ${fontAseprite.className}`}>
         <header className="w-full px-5 flex justify-between md:justify-center md:gap-8 shadow-md pb-2 pt-3 fixed z-10">
-          {/* ==========  ABOUT LINK ========== */}
-          {/* ========== GALLERY LINK ========== */}
           {/* ========== SHOP LINK ========== */}
           <Link href="#/shop" className="hover:opacity-70 transition-all">
             <div className="flex items-center">
               <Image src="/images/shop.png" alt="A store front icon on a 16x16 pixel art canvas using just simple black lines" title="Shop" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
               <p className="ml-1 hidden md:block">Shop</p>
+            </div>
+          </Link>
+          {/* ==========  Contact LINK ========== */}
+          <Link href="#/shop" className="hover:opacity-70 transition-all">
+            <div className="flex items-center">
+              <Image src="/images/mail.png" alt="An envelope icon on a 16x16 pixel art canvas using just simple black lines" title="Contact Me" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
+              <p className="ml-1 hidden md:block">Contact</p>
+            </div>
+          </Link>
+          {/* ========== GALLERY LINK ========== */}
+          <Link href="#/shop" className="hover:opacity-70 transition-all">
+            <div className="flex items-center">
+              <Image src="/images/gallery.png" alt="A gallery icon on a 16x16 pixel art canvas using just simple black lines" title="Gallery" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
+              <p className="ml-1 hidden md:block">Gallery</p>
             </div>
           </Link>
           {/* ========== CART LINK ========== */}
