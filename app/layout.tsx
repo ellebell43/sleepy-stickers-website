@@ -17,7 +17,7 @@ export default function RootLayout({
       lang="en"
       className={`h-full ${fontAseprite.className}`}
     >
-      <body className={`min-h-full w-full flex flex-col max-w-500 mx-auto antialiased transition-all ${fontAseprite.className}`}>
+      <body className={`min-h-full w-full flex flex-col mx-auto antialiased transition-all ${fontAseprite.className}`}>
         <header className="w-full px-5 flex justify-center gap-12 md:gap-8 shadow-md pb-2 pt-3 fixed z-10">
           {/* ========== SHOP LINK ========== */}
           <Link href="#/shop" className="hover:opacity-70 transition-all">
@@ -49,7 +49,7 @@ export default function RootLayout({
             </div>
           </Link>
         </header>
-        <main className="py-12 px-4">
+        <main className="py-12 px-4 w-full min-h-screen">
           {children}
         </main>
       </body>
