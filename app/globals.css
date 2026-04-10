@@ -19,6 +19,12 @@
     cursor: url("/images/cursor-default-inverted.png"), default;
     /* just change the cursor.ico path to your location */
   }
+
+  .cursor-pixel-pointer,
+  button:hover,
+  a:hover {
+    cursor: url("/images/cursor-pointer.png"), default;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,6 +37,12 @@
   body {
     cursor: url("/images/cursor-default.png"), default;
     /* just change the cursor.ico path to your location */
+  }
+
+  .cursor-pixel-pointer,
+  button:hover,
+  a:hover {
+    cursor: url("/images/cursor-pointer-inverted.png"), default;
   }
 }
 
@@ -52,5 +64,5 @@ img {
 
 button:hover,
 a:hover {
-  @apply cursor-pointer opacity-70
+  @apply opacity-70
 }
