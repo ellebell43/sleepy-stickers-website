@@ -29,6 +29,7 @@ export default function RootLayout({
 
   // listen for storage change events and update cart quantity when it happens
   useEffect(() => {
+    setQuantity(getCartQuantity)
     const listenStorageChange = () => {
       setQuantity(getCartQuantity)
     }
