@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import Image from "next/image"
 import { Suspense } from "react"
 import Spinner from "./spinner"
+import ProductCard from "./product-card"
 
 export default async function ProductCatalog() {
   if (!process.env.ROUTE_HOST) {
@@ -13,17 +14,19 @@ export default async function ProductCatalog() {
     const data = await res.json()
     return (
       <Suspense fallback={<Spinner />}>
-        <ul className="flex">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-fit mx-auto mt-8">
           {data.products.map((el: Stripe.Product, i: number) => {
-            return (
-              <li key={i} className="border-4 border-black p-2 flex flex-col justify-center items-center">
-                <Image src={el.images[0]} alt={el.description ? el.description : el.name} height={128} width={128} className="mb-4" />
-                <p>{el.name}</p>
-                <p className="opacity-70 text-xs">{el.description}</p>
-              </li>
-            )
+            // Ignore any item that is a variant
+            if (el.metadata.variant == "true") return
+            // Create an array of variants that belong to the item
+            let variants: Stripe.Product[] = []
+            data.products.map((item: Stripe.Product, i: number) => {
+              if (item.metadata.variant == "true" && item.metadata.variantOf == el.name) variants.push(item)
+            })
+            // Return a ProductCard element
+            return <ProductCard product={el} key={i} variants={variants} />
           })}
-        </ul>
+        </div>
       </Suspense>
     )
   } catch (error) {
