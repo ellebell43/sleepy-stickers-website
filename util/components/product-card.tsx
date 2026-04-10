@@ -79,7 +79,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
       else return <p>hm. something went wrong and the image wasn't found. please email me at hello@sleepystickers.art so I can fix it!</p>
 
       const names = name.split(" - ")
-      return <div className='min-h-[80px]'>
+      return <div className='min-h-[100px]'>
         {names.map((el, i) => <p className='text-center text-4xl' key={i}>{el}</p>)}
       </div>
     }
@@ -91,7 +91,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
         (selectedVariant == undefined && variant == false) ||
         (selectedVariant == index)
       return (
-        <button onClick={() => setSelectedVariant(!variant ? undefined : index)} className={`rounded-full ${active ? "border-2" : ""}`}>
+        <button onClick={() => setSelectedVariant(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
           <Image src={src} alt={alt} width={64} height={64} />
         </button>
       )
@@ -145,12 +145,16 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
           </button>
 
           {/* ======== PRODUCT CONTENT ======== */}
-          <div className='flex flex-col justify-center items-center'> {/* Big image */}
+          <div className='flex flex-col justify-center items-center'>
+
+            {/* Big image */}
             <Image src={determineImage()} alt={determineAlt()} height={256} width={256} className="mb-4 mx-auto" />
+
             {/* Product name*/}
             {determineName()}
+
             {/* Variation options */}
-            <div className='flex justify-center gap-8 px-4 w-fit'>
+            <div className='flex justify-center gap-6 px-4 w-fit'>
               {!(variants?.length) ? <></> :
                 <VariantButton src={product.images[0]} alt={product.description ? product.description : product.name} variant={false} />
               }
@@ -165,16 +169,18 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
           {/* ======== PRODUCT FEATURES ======== */}
           <div className='flex flex-col items-center justify-center'>
             <p className='max-w-xs mx-auto my-4'>{product.description}</p>
+
             {/* size options */}
             <div className='flex flex-row-reverse gap-2'>
               {features.map((el: Stripe.Entitlements.Feature, i: number) =>
                 <div key={i}>
-                  <button aria-pressed={selectedFeature == i} className={`border-4 px-4 py-2 ${selectedFeature == i ? "" : "bg-gray-300 dark:bg-gray-600"}`} onClick={() => setSelectedFeature(i)}>
+                  <button aria-pressed={selectedFeature == i} className={`border-4 px-4 py-2 transition-all ${selectedFeature == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setSelectedFeature(i)}>
                     <p>{el.name}</p>
                   </button>
                   <p className='text-center text-sm opacity-70'>${el.metadata.cost}.00</p>
                 </div>)}
             </div>
+
             {/* Quantity */}
             <div className={`flex justify-center gap-12 border-4 p-2 mt-4`}>
               <button
@@ -195,10 +201,12 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
                 <Image src="/images/plus.png" alt="plus symbol" width={16} height={16} />
               </button>
             </div>
+
             {/* Price */}
             <p className='text-3xl text-center my-4'>${price * quantity}.00 USD</p>
+
             {/* add to cart button */}
-            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm' onClick={() => addToCart()}>{itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
+            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => addToCart()}>{itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
           </div>
         </div>
       </div>
@@ -209,9 +217,9 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
 
   return (
     <>
-      <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-45 hover:bg-gray-100 dark:hover:bg-gray-700">
+      <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 hover:bg-gray-100 dark:hover:bg-gray-700">
         <Image src={product.images[0]} alt={product.description ? product.description : product.name} height={128} width={128} className="mb-4" />
-        <p className="text-center">{product.name}</p>
+        <p className="text-center m-0 relative">{product.name}</p>
       </button>
       {showDetails ? <Details /> : <></>}
     </>
