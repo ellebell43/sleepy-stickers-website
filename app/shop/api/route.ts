@@ -5,6 +5,7 @@ import Stripe from "stripe";
 export type ResponseData = {
   message: string
   products: Stripe.Product[]
+  features: Stripe.Entitlements.Feature[]
 }
 
 export async function GET(req: NextRequest) {
@@ -16,5 +17,6 @@ export async function GET(req: NextRequest) {
 
   const stripe = new Stripe(token)
   const products = await stripe.products.list()
-  return NextResponse.json({ message: 'success', products: products.data })
+  const features = await stripe.entitlements.features.list()
+  return NextResponse.json({ message: 'success', products: products.data, features: features.data })
 }

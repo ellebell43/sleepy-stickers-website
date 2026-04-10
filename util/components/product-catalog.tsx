@@ -20,11 +20,12 @@ export default async function ProductCatalog() {
           if (el.metadata.variant == "true") return
           // Create an array of variants that belong to the item
           let variants: Stripe.Product[] = []
-          data.products.map((item: Stripe.Product, i: number) => {
-            if (item.metadata.variant == "true" && item.metadata.variantOf == el.name) variants.push(item)
-          })
+          data.products.map((item: Stripe.Product, i: number) => { if (item.metadata.variant == "true" && item.metadata.variantOf == el.name) variants.push(item) })
+          // Create a list of features to pass to each product
+          let features: Stripe.Entitlements.Feature[] = []
+          data.features.map((el: Stripe.Entitlements.Feature, i: number) => { if (el.metadata.productType == "sticker") features.push(el) })
           // Return a ProductCard element
-          return <ProductCard product={el} key={i} variants={variants} />
+          return <ProductCard product={el} key={i} variants={variants} features={features} />
         })}
       </div>
     </Suspense>
