@@ -1,17 +1,41 @@
+'use client'
+
+import { cartItem } from "@/util/types";
 import "./globals.css";
 import localFont from 'next/font/local'
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
 
 const iconSize = 16 * 2
+
+const getCartQuantity = () => {
+  if (localStorage.getItem("cart") == null) return 0
+  // @ts-ignore
+  const cart: cartItem[] = JSON.parse(localStorage.getItem("cart"))
+  let quantity = 0
+  cart.map((el: cartItem) => { quantity += el.quantity })
+  return quantity
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [quantity, setQuantity] = useState(0)
+
+  // listen for storage change events and update cart quantity when it happens
+  useEffect(() => {
+    const listenStorageChange = () => {
+      setQuantity(getCartQuantity)
+    }
+    window.addEventListener("storage", listenStorageChange)
+    return () => window.removeEventListener("storage", listenStorageChange)
+  }, [])
+
   return (
     <html
       lang="en"
@@ -43,7 +67,7 @@ export default function RootLayout({
           {/* ========== CART LINK ========== */}
           <Link href="#/cart" className="hover:opacity-70 transition-all">
             <div className="flex items-center">
-              <p className="text-sm">0</p>
+              <p className="text-sm">{quantity}</p>
               <Image src="/images/cart.png" alt="A shopping cart icon on a 16x16 pixel art canvas using just simple black lines" title="Cart" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
               <p className="ml-1 hidden md:block">Cart</p>
             </div>
