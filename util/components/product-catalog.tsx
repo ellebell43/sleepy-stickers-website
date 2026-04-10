@@ -8,12 +8,12 @@ import ProductCard from "./product-card"
 export default async function ProductCatalog() {
   // throw error if host route can't be found in Environment variables
   if (!process.env.HOST_ROUTE) {
-    return <p className="text-center mx-6 text-6xl">Well that wasn't right. Environment variable ROUTE_HOST wasn't found.</p>
+    return <p className="text-center my-12 text-4xl">Well that wasn't right. Environment variable ROUTE_HOST wasn't found.</p>
   }
 
   // Fetch data and show error if response is not 200
   const res = await fetch(`${process.env.HOST_ROUTE}/shop/api`)
-  if (res.status != 200) return <p className="text-center mx-6 text-6xl">Well that wasn't right. Error {res.status}: {res.statusText}</p>
+  if (res.status != 200) return <p className="text-center my-12 text-4xl">Well that wasn't right. Error {res.status}: {res.statusText}</p>
   // Parse fetch request data
   const data = await res.json()
 

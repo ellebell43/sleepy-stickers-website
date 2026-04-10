@@ -11,8 +11,8 @@ export type ResponseData = {
 export async function GET(req: NextRequest) {
   const token = process.env.STRIPE_TOKEN
 
-  if (!token) {
-    return NextResponse.json({ message: "no stripe token found", products: [] }, { status: 401 })
+  if (token == undefined) {
+    return NextResponse.json({ message: "no stripe token found", products: [] }, { status: 401, statusText: "Unauthorized. No Stripe token found for authentication." })
   }
 
   const stripe = new Stripe(token)
