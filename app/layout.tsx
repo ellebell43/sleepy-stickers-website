@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
 
@@ -45,6 +46,7 @@ export default function RootLayout({
     >
       <body className={`min-h-full w-full flex flex-col mx-auto antialiased transition-all ${fontAseprite.className} text-black dark:text-white bg-stone-100 dark:bg-stone-800`}>
         <SpeedInsights />
+        <Analytics />
 
         {/* ======== HEADER ======== */}
         <header className="w-full px-5 flex justify-center gap-12 md:gap-8 shadow-md pb-2 pt-3 fixed z-10 bg-stone-50 dark:bg-stone-900 border-b-4">
