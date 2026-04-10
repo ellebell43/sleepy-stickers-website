@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       new URL("https://files.stripe.com/links/**")
-    ]
+    ],
+    qualities: [100]
   },
 };
 

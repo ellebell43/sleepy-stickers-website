@@ -28,3 +28,7 @@ body {
 h1 {
   @apply text-5xl text-center
 }
+
+img, image {
+  image-rendering: crisp-edges;
+}

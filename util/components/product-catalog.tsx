@@ -6,11 +6,11 @@ import Spinner from "./spinner"
 import ProductCard from "./product-card"
 
 export default async function ProductCatalog() {
-  if (!process.env.ROUTE_HOST) {
+  if (!process.env.HOST_ROUTE) {
     return <p>Oops! Somethings went wrong! Failed to parse host for API route</p>
   }
   try {
-    const res = await fetch(`${process.env.ROUTE_HOST}/shop/api`)
+    const res = await fetch(`${process.env.HOST_ROUTE}/shop/api`)
     const data = await res.json()
     return (
       <Suspense fallback={<Spinner />}>
