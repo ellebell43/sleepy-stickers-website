@@ -107,8 +107,18 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
         if (localStorage.getItem("cart")) {
           // @ts-ignore
           let cart: cartItem[] = JSON.parse(localStorage.getItem("cart"))
-          cart.map((el) => {
-            if (el.product.id == cartProduct.id && el.feature.id == feature.id) el.quantity = quantity
+          let indexToRemove: number
+          cart.map((el: cartItem, i: number) => {
+            if (el.product.id == cartProduct.id && el.feature.id == feature.id) {
+              if (quantity == 0) {
+                indexToRemove = i
+              } else {
+                el.quantity = quantity
+              }
+            }
+            if (indexToRemove != undefined) {
+              cart.splice(indexToRemove, 1)
+            }
           })
           localStorage.setItem("cart", JSON.stringify(cart))
         }
@@ -206,7 +216,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
             <p className='text-3xl text-center my-4'>${price * quantity}.00 USD</p>
 
             {/* add to cart button */}
-            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => addToCart()}>{itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
+            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => addToCart()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
           </div>
         </div>
       </div>
