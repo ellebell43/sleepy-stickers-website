@@ -2,7 +2,7 @@
 
 import Stripe from 'stripe'
 import Image from 'next/image'
-import { act, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cartItem } from '../types'
 
 export default function ProductCard(props: { product: Stripe.Product, key: number, variants?: Stripe.Product[], features: Stripe.Entitlements.Feature[] }) {
@@ -16,7 +16,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
     const [price, setPrice] = useState(2)
     const [quantity, setQuantity] = useState(0)
     const [itemInCart, setItemInCart] = useState(false)
-    const [selectedFeature, setSelectedFeature] = useState(0)
+    const [selectedFeature, setSelectedFeature] = useState(2)
 
     // set selected feature to 1.5in by default when the detail panel first opens
     useEffect(() => {
@@ -87,12 +87,14 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
     // Component for selecting product variants
     const VariantButton = (props: { src: string, alt: string, variant: boolean, index?: number }) => {
       const { src, alt, variant, index } = props
+
       const active =
         (selectedVariant == undefined && variant == false) ||
-        (selectedVariant == index)
+        (selectedVariant == index);
+
       return (
         <button onClick={() => setSelectedVariant(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
-          <Image src={src} alt={alt} width={64} height={64} />
+          <Image src={src} alt={alt} width={64} height={64} loading="eager" />
         </button>
       )
     }
@@ -147,7 +149,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
       // ======== LETTER BOX ========
       <div className='fixed top-0 left-0 w-screen h-screen bg-black/25 dark:bg-white/25 flex items-center justify-center z-50'>
         {/* ======== CONTENT BOX ======== */}
-        <div className='bg-white dark:bg-black w-screen md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center justify-center lg:flex-row'>
+        <div className='bg-white dark:bg-black w-screen md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center justify-center lg:flex-row lg:gap-6'>
 
           {/* ======== CLOSE BUTTON ======== */}
           <button className='hover:cursor-pointer absolute top-2 right-2' onClick={() => setShowDetails(false)}>
@@ -158,7 +160,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
           <div className='flex flex-col justify-center items-center'>
 
             {/* Big image */}
-            <Image src={determineImage()} alt={determineAlt()} height={256} width={256} className="mb-4 mx-auto" />
+            <Image src={determineImage()} alt={determineAlt()} height={256} width={256} className="mb-4 mx-auto" loading="eager" />
 
             {/* Product name*/}
             {determineName()}
@@ -228,7 +230,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
   return (
     <>
       <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 hover:bg-gray-100 dark:hover:bg-gray-700">
-        <Image src={product.images[0]} alt={product.description ? product.description : product.name} height={128} width={128} className="mb-4" />
+        <Image src={product.images[0]} alt={product.description ? product.description : product.name} height={128} width={128} className="mb-4" loading="eager" />
         <p className="text-center m-0 relative">{product.name}</p>
       </button>
       {showDetails ? <Details /> : <></>}
