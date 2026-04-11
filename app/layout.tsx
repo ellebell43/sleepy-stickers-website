@@ -83,7 +83,7 @@ export default function RootLayout({
           </Link>
 
           {/* Cart Link */}
-          <Link href="#/cart" className="hover:opacity-70 transition-all">
+          <Link href="/cart" className="hover:opacity-70 transition-all">
             <div className="flex items-center">
               <p className="text-sm">{quantity}</p>
               <Image src="/images/cart.png" alt="A shopping cart icon on a 16x16 pixel art canvas using just simple black lines" title="Cart" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
