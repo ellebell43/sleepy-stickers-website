@@ -8,19 +8,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
+import { getCartTotalQuantity } from "@/util/cart-helpers";
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
 
 const iconSize = 16 * 2
-
-const getCartQuantity = () => {
-  if (localStorage.getItem("cart") == null) return 0
-  // @ts-ignore
-  const cart: cartItem[] = JSON.parse(localStorage.getItem("cart"))
-  let quantity = 0
-  cart.map((el: cartItem) => { quantity += el.quantity })
-  return quantity
-}
 
 export default function RootLayout({
   children,
@@ -31,9 +23,9 @@ export default function RootLayout({
 
   // listen for storage change events and update cart quantity when it happens
   useEffect(() => {
-    setQuantity(getCartQuantity)
+    setQuantity(getCartTotalQuantity())
     const listenStorageChange = () => {
-      setQuantity(getCartQuantity)
+      setQuantity(getCartTotalQuantity())
     }
     window.addEventListener("storage", listenStorageChange)
     return () => window.removeEventListener("storage", listenStorageChange)

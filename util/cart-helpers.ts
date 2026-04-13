@@ -1,0 +1,53 @@
+import { cartItem } from "./types"
+
+export function getCartArray(): cartItem[] {
+  const cartStorage = localStorage.getItem("cart")
+  if (cartStorage == null) return []
+  return JSON.parse(cartStorage)
+}
+
+export function replaceCartStorage(newCart: cartItem[]) {
+  localStorage.setItem("cart", JSON.stringify(newCart))
+}
+
+export function updateItemQuantity(index: number, newQuantity: number, otherCart?: cartItem[]) {
+  let cart = otherCart ? otherCart : getCartArray()
+  cart[index].quantity = newQuantity
+  replaceCartStorage(cart)
+}
+
+export function getCartTotalQuantity(otherCart?: cartItem[]): number {
+  let cart = otherCart ? otherCart : getCartArray()
+  let quantity = 0
+  cart.map((el) => quantity += el.quantity)
+  return quantity
+}
+
+export function addItemToCart(item: cartItem, otherCart?: cartItem[]) {
+  let cart = otherCart ? otherCart : getCartArray()
+  cart.push(item)
+  replaceCartStorage(cart)
+}
+
+export function removeItemFromCart(index: number, otherCart?: cartItem[]) {
+  let cart = otherCart ? otherCart : getCartArray()
+  cart.splice(index, 1)
+  replaceCartStorage(cart)
+
+}
+
+export function getPriceOfItem(index: number, otherCart?: cartItem[]): number {
+  let cart = otherCart ? otherCart : getCartArray()
+  return cart[index].price
+}
+
+export function findItemIndex(productID: string, featureID: string, otherCart?: cartItem[]): number | undefined {
+  let cart = otherCart ? otherCart : getCartArray()
+  let index: number | undefined = undefined
+  cart.map((el: cartItem, i: number) => {
+    if (el.product.id == productID && el.feature.id == featureID) {
+      index = i
+    }
+  })
+  return index
+}

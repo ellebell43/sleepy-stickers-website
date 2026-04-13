@@ -4,6 +4,8 @@ import Stripe from 'stripe'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { cartItem } from '../types'
+import { addItemToCart, findItemIndex, getCartArray, removeItemFromCart, replaceCartStorage, updateItemQuantity } from '../cart-helpers'
+import { DecreaseButton, IncreaseButton } from './buttons'
 
 export default function ProductCard(props: { product: Stripe.Product, key: number, variants?: Stripe.Product[], features: Stripe.Entitlements.Feature[] }) {
   const { product, key, variants, features } = props
@@ -12,70 +14,62 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
 
   const Details = () => {
     // State variables
-    const [selectedVariant, setSelectedVariant] = useState<undefined | number>(undefined)
+    const [selectedVariantIndex, setSelectedVariantIndex] = useState<undefined | number>(undefined)
     const [price, setPrice] = useState(2)
     const [quantity, setQuantity] = useState(0)
     const [itemInCart, setItemInCart] = useState(false)
-    const [selectedFeature, setSelectedFeature] = useState(2)
+    const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(2)
 
     // set selected feature to 1.5in by default when the detail panel first opens
     useEffect(() => {
-      features.map((el: Stripe.Entitlements.Feature, i: number) => { if (el.name == "1.5in") setSelectedFeature(i) })
+      features.map((el: Stripe.Entitlements.Feature, i: number) => { if (el.name == "1.5in") setSelectedFeatureIndex(i) })
     }, [])
 
     // update price anytime selected feature changes
     useEffect(() => {
-      if (features[selectedFeature].metadata.cost) {
-        setPrice(Number(features[selectedFeature].metadata.cost))
+      if (features[selectedFeatureIndex].metadata.cost) {
+        setPrice(Number(features[selectedFeatureIndex].metadata.cost))
       }
-    }, [selectedFeature])
+    }, [selectedFeatureIndex])
 
     // update quantity based on cart anytime variant or feature changes
     useEffect(() => {
       getCartStorageQuantity()
-    }, [selectedVariant, selectedFeature])
+    }, [selectedVariantIndex, selectedFeatureIndex])
 
-    // determine if item is in cart and update quantity accordingly
+    // determine if item is in cart and update displayed quantity accordingly
     const getCartStorageQuantity = () => {
-      if (localStorage.getItem("cart")) {
-        // @ts-ignore
-        const cart: cartItem[] = JSON.parse(localStorage.getItem("cart"))
-        const activeProduct = selectedVariant && variants ? variants[selectedVariant] : product
-        let matchFound = false
-        cart.map((el) => {
-          if (el.product.id == activeProduct.id && el.feature.id == features[selectedFeature].id) {
-            setQuantity(el.quantity)
-            setItemInCart(true)
-            matchFound = true
-          }
-        })
-        if (!matchFound) {
-          setQuantity(0);
-          setItemInCart(false)
-          console.log()
-        }
+      const cart = getCartArray()
+      const activeProduct = selectedVariantIndex && variants ? variants[selectedVariantIndex] : product
+      const index = findItemIndex(activeProduct.id, features[selectedFeatureIndex].id, cart)
+      if (index != undefined) {
+        setQuantity(cart[index].quantity)
+        setItemInCart(true)
+      } else {
+        setQuantity(0)
+        setItemInCart(false)
       }
     }
 
     // Determine image used in details panel
     const determineImage = () => {
-      if (selectedVariant == undefined) return product.images[0]
-      else if (variants) return variants[selectedVariant].images[0]
+      if (selectedVariantIndex == undefined) return product.images[0]
+      else if (variants) return variants[selectedVariantIndex].images[0]
       else return "/images/not-found.png"
     }
 
     // Determine alt text used in details panel
     const determineAlt = () => {
-      if (selectedVariant == undefined) return product.description ? product.description : product.name
-      else if (variants) return variants[selectedVariant].description ? variants[selectedVariant].description : variants[selectedVariant].name
+      if (selectedVariantIndex == undefined) return product.description ? product.description : product.name
+      else if (variants) return variants[selectedVariantIndex].description ? variants[selectedVariantIndex].description : variants[selectedVariantIndex].name
       else return "hm. something went wrong and the image wasn't found. please email me at hello@sleepystickers.art so I can fix it!"
     }
 
     // Determine name used in details panel
     const determineName = () => {
       let name: string
-      if (selectedVariant == undefined) name = product.name
-      else if (variants) name = variants[selectedVariant].name
+      if (selectedVariantIndex == undefined) name = product.name
+      else if (variants) name = variants[selectedVariantIndex].name
       else return <p>hm. something went wrong and the image wasn't found. please email me at hello@sleepystickers.art so I can fix it!</p>
 
       const names = name.split(" - ")
@@ -89,53 +83,34 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
       const { src, alt, variant, index } = props
 
       const active =
-        (selectedVariant == undefined && variant == false) ||
-        (selectedVariant == index);
+        (selectedVariantIndex == undefined && variant == false) ||
+        (selectedVariantIndex == index);
 
       return (
-        <button onClick={() => setSelectedVariant(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
+        <button onClick={() => setSelectedVariantIndex(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
           <Image src={src} alt={alt} width={64} height={64} loading="eager" />
         </button>
       )
     }
 
     // Add selected product to cart
-    const addToCart = () => {
-      const cartProduct: Stripe.Product = selectedVariant != undefined && variants ? variants[selectedVariant] : product
-      const feature = features[selectedFeature]
+    const updateCartItem = () => {
+      const cartProduct: Stripe.Product = selectedVariantIndex != undefined && variants ? variants[selectedVariantIndex] : product
+      const feature = features[selectedFeatureIndex]
+      const item: cartItem = { product: cartProduct, feature, price, quantity }
+      const index = findItemIndex(item.product.id, item.feature.id)
 
-      // if item is already in cart, update the quantity of existing cart item
-      if (itemInCart) {
-        if (localStorage.getItem("cart")) {
-          // @ts-ignore
-          let cart: cartItem[] = JSON.parse(localStorage.getItem("cart"))
-          let indexToRemove: number
-          cart.map((el: cartItem, i: number) => {
-            if (el.product.id == cartProduct.id && el.feature.id == feature.id) {
-              if (quantity == 0) {
-                indexToRemove = i
-              } else {
-                el.quantity = quantity
-              }
-            }
-            if (indexToRemove != undefined) {
-              cart.splice(indexToRemove, 1)
-            }
-          })
-          localStorage.setItem("cart", JSON.stringify(cart))
-        }
-        // if item isn't in cart, create cart if need and add to cart
-      } else {
-        const item: cartItem = { product: cartProduct, feature, price, quantity }
-        let cartStorage = localStorage.getItem("cart")
-        if (!cartStorage) {
-          let cart: cartItem[] = [item]
-          localStorage.setItem("cart", JSON.stringify(cart))
+      // if item is in the cart, update quantity
+      if (index != undefined) {
+        // remove cart item if quantity would update to 0
+        if (quantity == 0) {
+          removeItemFromCart(index)
         } else {
-          let cart: cartItem[] = JSON.parse(cartStorage)
-          cart.push(item)
-          localStorage.setItem("cart", JSON.stringify(cart))
+          updateItemQuantity(index, item.quantity)
         }
+        // otherwise add item to the cart
+      } else {
+        addItemToCart(item)
       }
 
       // dispatch event to update cart quantity in header and close details panel
@@ -186,7 +161,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
             <div className='flex flex-row-reverse gap-2'>
               {features.map((el: Stripe.Entitlements.Feature, i: number) =>
                 <div key={i}>
-                  <button aria-pressed={selectedFeature == i} className={`border-4 px-4 py-2 transition-all ${selectedFeature == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setSelectedFeature(i)}>
+                  <button aria-pressed={selectedFeatureIndex == i} className={`border-4 px-4 py-2 transition-all ${selectedFeatureIndex == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setSelectedFeatureIndex(i)}>
                     <p>{el.name}</p>
                   </button>
                   <p className='text-center text-sm opacity-70'>${el.metadata.cost}.00</p>
@@ -195,30 +170,16 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
 
             {/* Quantity */}
             <div className={`flex justify-center gap-12 border-4 p-2 mt-4`}>
-              <button
-                className={`${quantity == 1 ? "opacity-30" : ""}`}
-                onClick={() => {
-                  if (quantity > 0) setQuantity(quantity - 1)
-                }}
-              >
-                <Image src="/images/minus.png" alt="minus symbol" width={16} height={16} />
-              </button>
+              <DecreaseButton onDecrease={() => setQuantity(quantity - 1)} canDecrease={quantity > 0} size={16} />
               <p>{quantity}</p>
-              <button
-                className={`${quantity == 10 ? "opacity-30" : ""}`}
-                onClick={() => {
-                  if (quantity <= 10) setQuantity(quantity + 1)
-                }}
-              >
-                <Image src="/images/plus.png" alt="plus symbol" width={16} height={16} />
-              </button>
+              <IncreaseButton onIncrease={() => setQuantity(quantity + 1)} canIncrease={quantity < 10} size={16} />
             </div>
 
             {/* Price */}
             <p className='text-3xl text-center my-4'>${price * quantity}.00 USD</p>
 
             {/* add to cart button */}
-            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => addToCart()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
+            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
           </div>
         </div>
       </div>

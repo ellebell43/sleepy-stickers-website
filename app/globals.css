@@ -42,7 +42,7 @@ img {
   image-rendering: crisp-edges;
 }
 
-button:hover,
+button:hover:enabled,
 a:hover {
   @apply opacity-70
 }
