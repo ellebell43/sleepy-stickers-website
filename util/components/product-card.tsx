@@ -4,8 +4,9 @@ import Stripe from 'stripe'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { cartItem } from '../types'
-import { addItemToCart, findItemIndex, getCartArray, removeItemFromCart, replaceCartStorage, updateItemQuantity } from '../cart-helpers'
+import { addItemToCart, findItemIndex, getCartArray, getPriceOfItem, removeItemFromCart, replaceCartStorage, updateItemQuantity } from '../cart-helpers'
 import { DecreaseButton, IncreaseButton } from './buttons'
+import { priceToString } from '../general-helpers'
 
 export default function ProductCard(props: { product: Stripe.Product, key: number, variants?: Stripe.Product[], features: Stripe.Entitlements.Feature[] }) {
   const { product, key, variants, features } = props
@@ -15,22 +16,30 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
   const Details = () => {
     // State variables
     const [selectedVariantIndex, setSelectedVariantIndex] = useState<undefined | number>(undefined)
-    const [price, setPrice] = useState(2)
     const [quantity, setQuantity] = useState(0)
     const [itemInCart, setItemInCart] = useState(false)
     const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(2)
+    const [price, setPrice] = useState(quantity * Number(features[selectedFeatureIndex].metadata.cost))
+
+    useEffect(() => {
+      setPrice(quantity * Number(features[selectedFeatureIndex].metadata.cost))
+    }, [quantity, selectedVariantIndex, selectedFeatureIndex])
+
+    const getActiveProduct = () => {
+      return selectedVariantIndex && variants ? variants[selectedVariantIndex] : product
+    }
+
+    const getIndex = (): number | undefined => {
+      const activeProduct = getActiveProduct()
+      const index = findItemIndex(activeProduct.id, features[selectedFeatureIndex].id)
+      return index
+    }
+
 
     // set selected feature to 1.5in by default when the detail panel first opens
     useEffect(() => {
       features.map((el: Stripe.Entitlements.Feature, i: number) => { if (el.name == "1.5in") setSelectedFeatureIndex(i) })
     }, [])
-
-    // update price anytime selected feature changes
-    useEffect(() => {
-      if (features[selectedFeatureIndex].metadata.cost) {
-        setPrice(Number(features[selectedFeatureIndex].metadata.cost))
-      }
-    }, [selectedFeatureIndex])
 
     // update quantity based on cart anytime variant or feature changes
     useEffect(() => {
@@ -40,8 +49,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
     // determine if item is in cart and update displayed quantity accordingly
     const getCartStorageQuantity = () => {
       const cart = getCartArray()
-      const activeProduct = selectedVariantIndex && variants ? variants[selectedVariantIndex] : product
-      const index = findItemIndex(activeProduct.id, features[selectedFeatureIndex].id, cart)
+      const index = getIndex()
       if (index != undefined) {
         setQuantity(cart[index].quantity)
         setItemInCart(true)
@@ -97,7 +105,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
     const updateCartItem = () => {
       const cartProduct: Stripe.Product = selectedVariantIndex != undefined && variants ? variants[selectedVariantIndex] : product
       const feature = features[selectedFeatureIndex]
-      const item: cartItem = { product: cartProduct, feature, price, quantity }
+      const item: cartItem = { product: cartProduct, feature, quantity }
       const index = findItemIndex(item.product.id, item.feature.id)
 
       // if item is in the cart, update quantity
@@ -113,8 +121,6 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
         addItemToCart(item)
       }
 
-      // dispatch event to update cart quantity in header and close details panel
-      window.dispatchEvent(new Event("storage"))
       setShowDetails(false)
     }
 
@@ -176,7 +182,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
             </div>
 
             {/* Price */}
-            <p className='text-3xl text-center my-4'>${price * quantity}.00 USD</p>
+            <p className='text-3xl text-center my-4'>{priceToString(price)} USD</p>
 
             {/* add to cart button */}
             <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>

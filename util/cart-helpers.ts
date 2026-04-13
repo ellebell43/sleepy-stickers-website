@@ -8,12 +8,14 @@ export function getCartArray(): cartItem[] {
 
 export function replaceCartStorage(newCart: cartItem[]) {
   localStorage.setItem("cart", JSON.stringify(newCart))
+  window.dispatchEvent(new Event("storage"))
 }
 
 export function updateItemQuantity(index: number, newQuantity: number, otherCart?: cartItem[]) {
   let cart = otherCart ? otherCart : getCartArray()
   cart[index].quantity = newQuantity
   replaceCartStorage(cart)
+  window.dispatchEvent(new Event("storage"))
 }
 
 export function getCartTotalQuantity(otherCart?: cartItem[]): number {
@@ -23,22 +25,31 @@ export function getCartTotalQuantity(otherCart?: cartItem[]): number {
   return quantity
 }
 
+export function getCartTotalPrice(otherCart?: cartItem[]): number {
+  let cart = otherCart ? otherCart : getCartArray()
+  let price = 0
+  cart.map((el) => price += Number(el.feature.metadata.cost))
+  return price
+}
+
 export function addItemToCart(item: cartItem, otherCart?: cartItem[]) {
   let cart = otherCart ? otherCart : getCartArray()
   cart.push(item)
   replaceCartStorage(cart)
+  window.dispatchEvent(new Event("storage"))
+
 }
 
 export function removeItemFromCart(index: number, otherCart?: cartItem[]) {
   let cart = otherCart ? otherCart : getCartArray()
   cart.splice(index, 1)
   replaceCartStorage(cart)
-
+  window.dispatchEvent(new Event("storage"))
 }
 
 export function getPriceOfItem(index: number, otherCart?: cartItem[]): number {
   let cart = otherCart ? otherCart : getCartArray()
-  return cart[index].price
+  return Number(cart[index].feature.metadata.cost) * cart[index].quantity
 }
 
 export function findItemIndex(productID: string, featureID: string, otherCart?: cartItem[]): number | undefined {
