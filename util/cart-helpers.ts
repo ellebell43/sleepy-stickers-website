@@ -28,7 +28,7 @@ export function getCartTotalQuantity(otherCart?: cartItem[]): number {
 export function getCartTotalPrice(otherCart?: cartItem[]): number {
   let cart = otherCart ? otherCart : getCartArray()
   let price = 0
-  cart.map((el) => price += Number(el.feature.metadata.cost))
+  cart.map((el) => price += Number(el.productType.price))
   return price
 }
 
@@ -47,16 +47,11 @@ export function removeItemFromCart(index: number, otherCart?: cartItem[]) {
   window.dispatchEvent(new Event("storage"))
 }
 
-export function getPriceOfItem(index: number, otherCart?: cartItem[]): number {
-  let cart = otherCart ? otherCart : getCartArray()
-  return Number(cart[index].feature.metadata.cost) * cart[index].quantity
-}
-
-export function findItemIndex(productID: string, featureID: string, otherCart?: cartItem[]): number | undefined {
+export function findItemIndex(productID: string, otherCart?: cartItem[]): number | undefined {
   let cart = otherCart ? otherCart : getCartArray()
   let index: number | undefined = undefined
   cart.map((el: cartItem, i: number) => {
-    if (el.product.id == productID && el.feature.id == featureID) {
+    if (el.product.id == productID) {
       index = i
     }
   })

@@ -3,48 +3,52 @@
 import Stripe from 'stripe'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { cartItem } from '../types'
-import { addItemToCart, findItemIndex, getCartArray, getPriceOfItem, removeItemFromCart, replaceCartStorage, updateItemQuantity } from '../cart-helpers'
+import { cartItem, product, productType } from '../types'
+import { addItemToCart, findItemIndex, getCartArray, removeItemFromCart, updateItemQuantity } from '../cart-helpers'
 import { DecreaseButton, IncreaseButton } from './buttons'
 import { priceToString } from '../general-helpers'
 
-export default function ProductCard(props: { product: Stripe.Product, key: number, variants?: Stripe.Product[], features: Stripe.Entitlements.Feature[] }) {
-  const { product, key, variants, features } = props
+export default function ProductCard(props: { product: product, key: number, variants?: product[] }) {
+  const { product, key, variants } = props
   const [showDetails, setShowDetails] = useState(false)
 
 
   const Details = () => {
     // State variables
-    const [selectedVariantIndex, setSelectedVariantIndex] = useState<undefined | number>(undefined)
+    const [selectedProductTypeIndex, setSelectedProductTypeIndex] = useState<undefined | number>(undefined)
     const [quantity, setQuantity] = useState(0)
     const [itemInCart, setItemInCart] = useState(false)
-    const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(2)
-    const [price, setPrice] = useState(quantity * Number(features[selectedFeatureIndex].metadata.cost))
+    const [productTypeIndex, setProductTypeIndex] = useState(2)
+    const [price, setPrice] = useState(quantity * Number(product.availableTypes[productTypeIndex].price))
 
     useEffect(() => {
-      setPrice(quantity * Number(features[selectedFeatureIndex].metadata.cost))
-    }, [quantity, selectedVariantIndex, selectedFeatureIndex])
+      setPrice(quantity * Number(product.availableTypes[productTypeIndex].price))
+    }, [quantity, selectedProductTypeIndex, productTypeIndex])
 
     const getActiveProduct = () => {
-      return selectedVariantIndex && variants ? variants[selectedVariantIndex] : product
+      return selectedProductTypeIndex && variants ? variants[selectedProductTypeIndex] : product
     }
 
     const getIndex = (): number | undefined => {
       const activeProduct = getActiveProduct()
-      const index = findItemIndex(activeProduct.id, features[selectedFeatureIndex].id)
+      const index = findItemIndex(activeProduct.id)
       return index
     }
 
 
     // set selected feature to 1.5in by default when the detail panel first opens
     useEffect(() => {
-      features.map((el: Stripe.Entitlements.Feature, i: number) => { if (el.name == "1.5in") setSelectedFeatureIndex(i) })
+      product.availableTypes.map((el: productType, i: number) => { if (el.name == "1.5in sticker") setProductTypeIndex(i) })
     }, [])
 
     // update quantity based on cart anytime variant or feature changes
     useEffect(() => {
       getCartStorageQuantity()
-    }, [selectedVariantIndex, selectedFeatureIndex])
+    }, [selectedProductTypeIndex, productTypeIndex])
+
+    const getSelectedProduct = (): product => {
+      return selectedProductTypeIndex != undefined && variants ? variants[selectedProductTypeIndex] : product
+    }
 
     // determine if item is in cart and update displayed quantity accordingly
     const getCartStorageQuantity = () => {
@@ -59,31 +63,14 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
       }
     }
 
-    // Determine image used in details panel
-    const determineImage = () => {
-      if (selectedVariantIndex == undefined) return product.images[0]
-      else if (variants) return variants[selectedVariantIndex].images[0]
-      else return "/images/not-found.png"
-    }
-
-    // Determine alt text used in details panel
-    const determineAlt = () => {
-      if (selectedVariantIndex == undefined) return product.description ? product.description : product.name
-      else if (variants) return variants[selectedVariantIndex].description ? variants[selectedVariantIndex].description : variants[selectedVariantIndex].name
-      else return "hm. something went wrong and the image wasn't found. please email me at hello@sleepystickers.art so I can fix it!"
-    }
-
     // Determine name used in details panel
-    const determineName = () => {
-      let name: string
-      if (selectedVariantIndex == undefined) name = product.name
-      else if (variants) name = variants[selectedVariantIndex].name
-      else return <p>hm. something went wrong and the image wasn't found. please email me at hello@sleepystickers.art so I can fix it!</p>
-
+    const breakupName = (name: string, containerStyle?: string, textStyle?: string) => {
       const names = name.split(" - ")
-      return <div className='min-h-[100px]'>
-        {names.map((el, i) => <p className='text-center text-4xl' key={i}>{el}</p>)}
-      </div>
+      return (
+        <div className={containerStyle}>
+          {names.map((el, i) => <p className={textStyle} key={i}>{el}</p>)}
+        </div>
+      )
     }
 
     // Component for selecting product variants
@@ -91,11 +78,11 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
       const { src, alt, variant, index } = props
 
       const active =
-        (selectedVariantIndex == undefined && variant == false) ||
-        (selectedVariantIndex == index);
+        (selectedProductTypeIndex == undefined && variant == false) ||
+        (selectedProductTypeIndex == index);
 
       return (
-        <button onClick={() => setSelectedVariantIndex(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
+        <button onClick={() => setSelectedProductTypeIndex(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
           <Image src={src} alt={alt} width={64} height={64} loading="eager" />
         </button>
       )
@@ -103,10 +90,10 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
 
     // Add selected product to cart
     const updateCartItem = () => {
-      const cartProduct: Stripe.Product = selectedVariantIndex != undefined && variants ? variants[selectedVariantIndex] : product
-      const feature = features[selectedFeatureIndex]
-      const item: cartItem = { product: cartProduct, feature, quantity }
-      const index = findItemIndex(item.product.id, item.feature.id)
+      const productSelected: product = selectedProductTypeIndex != undefined && variants ? variants[selectedProductTypeIndex] : product
+      const productType = product.availableTypes[productTypeIndex]
+      const item: cartItem = { product: productSelected, productType, quantity }
+      const index = findItemIndex(item.product.id)
 
       // if item is in the cart, update quantity
       if (index != undefined) {
@@ -141,36 +128,36 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
           <div className='flex flex-col justify-center items-center'>
 
             {/* Big image */}
-            <Image src={determineImage()} alt={determineAlt()} height={256} width={256} className="mb-4 mx-auto" loading="eager" />
+            <Image src={`/products/${getSelectedProduct().id}.png`} alt={getSelectedProduct().description} height={256} width={256} className="mb-4 mx-auto" loading="eager" />
 
             {/* Product name*/}
-            {determineName()}
+            {breakupName(getSelectedProduct().name, "min-h-[100px]", "text-center text-4xl")}
 
             {/* Variation options */}
             <div className='flex justify-center gap-6 px-4 w-fit'>
               {!(variants?.length) ? <></> :
-                <VariantButton src={product.images[0]} alt={product.description ? product.description : product.name} variant={false} />
+                <VariantButton src={`/products/${product.id}.png`} alt={product.description} variant={false} />
               }
               {variants?.map((el, i) => {
                 return (
-                  <VariantButton key={i} src={el.images[0]} alt={el.description ? el.description : el.name} variant={true} index={i} />
+                  <VariantButton key={i} src={`/products/${el.id}.png`} alt={el.description} variant={true} index={i} />
                 )
               })}
             </div>
           </div>
 
-          {/* ======== PRODUCT FEATURES ======== */}
+          {/* ======== PRODUCT product.availableTypes ======== */}
           <div className='flex flex-col items-center justify-center'>
             <p className='max-w-xs mx-auto my-4'>{product.description}</p>
 
             {/* size options */}
             <div className='flex flex-row-reverse gap-2'>
-              {features.map((el: Stripe.Entitlements.Feature, i: number) =>
+              {product.availableTypes.map((el: productType, i: number) =>
                 <div key={i}>
-                  <button aria-pressed={selectedFeatureIndex == i} className={`border-4 px-4 py-2 transition-all ${selectedFeatureIndex == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setSelectedFeatureIndex(i)}>
-                    <p>{el.name}</p>
+                  <button aria-pressed={productTypeIndex == i} className={`border-4 px-4 py-2 transition-all ${productTypeIndex == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setProductTypeIndex(i)}>
+                    {breakupName(el.name, "", "text-sm my-0")}
                   </button>
-                  <p className='text-center text-sm opacity-70'>${el.metadata.cost}.00</p>
+                  <p className='text-center text-sm opacity-70'>${el.price}.00</p>
                 </div>)}
             </div>
 
@@ -197,7 +184,7 @@ export default function ProductCard(props: { product: Stripe.Product, key: numbe
   return (
     <>
       <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 hover:bg-gray-100 dark:hover:bg-gray-700">
-        <Image src={product.images[0]} alt={product.description ? product.description : product.name} height={128} width={128} className="mb-4" loading="eager" />
+        <Image src={`/products/${product.id}.png`} alt={product.description} height={128} width={128} className="mb-4" loading="eager" />
         <p className="text-center m-0 relative">{product.name}</p>
       </button>
       {showDetails ? <Details /> : <></>}

@@ -1,9 +1,8 @@
-import { ResponseData } from "@/app/shop/api/route"
-import Stripe from 'stripe'
-import Image from "next/image"
 import { Suspense } from "react"
 import Spinner from "./spinner"
 import ProductCard from "./product-card"
+import { catalog } from "../catalog"
+import { product } from "../types"
 
 export default async function ProductCatalog() {
   // throw error if host route can't be found in Environment variables
@@ -20,17 +19,14 @@ export default async function ProductCatalog() {
   return (
     <Suspense fallback={<Spinner />}>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-fit mx-auto mt-8">
-        {data.products.map((el: Stripe.Product, i: number) => {
+        {catalog.map((el: product, i: number) => {
           // Ignore any item that is a variant
-          if (el.metadata.variant == "true") return
+          if (el.variant) return
           // Create an array of variants that belong to the item
-          let variants: Stripe.Product[] = []
-          data.products.map((item: Stripe.Product, i: number) => { if (item.metadata.variant == "true" && item.metadata.variantOf == el.name) variants.push(item) })
-          // Create a list of features to pass to each product
-          let features: Stripe.Entitlements.Feature[] = []
-          data.features.map((el: Stripe.Entitlements.Feature, i: number) => { if (el.metadata.productType == "sticker") features.push(el) })
+          let variants: product[] = []
+          catalog.map((item: product) => { if (item.variant && item.variantOf == el.id) variants.push(item) })
           // Return a ProductCard element
-          return <ProductCard product={el} key={i} variants={variants} features={features} />
+          return <ProductCard product={el} key={i} variants={variants} />
         })}
       </div>
     </Suspense>
