@@ -8,11 +8,14 @@ import { priceToString } from "@/util/general-helpers"
 import Link from "next/link"
 
 export default function Page() {
-  let [cart, setCart] = useState<cartItem[]>(getCartArray())
-  let [totalQuantity, setTotalQuantity] = useState(getCartTotalQuantity())
-  let [totalPrice, setTotalPrice] = useState(getCartTotalPrice())
+  let [cart, setCart] = useState<cartItem[]>([])
+  let [totalQuantity, setTotalQuantity] = useState(0)
+  let [totalPrice, setTotalPrice] = useState(0)
 
   useEffect(() => {
+    setCart(getCartArray())
+    setTotalPrice(getCartTotalPrice())
+    setTotalQuantity(getCartTotalQuantity())
     const listenStorageChange = () => {
       setTotalQuantity(getCartTotalQuantity())
       setTotalPrice(getCartTotalPrice())

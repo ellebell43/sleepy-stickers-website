@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   if (typeof cart != object || cart.length == 0) {
     return NextResponse.json({}, { status: 400, statusText: "No cart provided" })
   }
-  if (cart[0].product == undefined || cart[0].feature == undefined || cart[0].quantity == undefined) {
+  if (cart[0].product == undefined || cart[0].productType == undefined || cart[0].quantity == undefined) {
     return NextResponse.json({}, { status: 400, statusText: "Invalid cart provided" })
   }
 
