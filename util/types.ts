@@ -41,7 +41,8 @@ export type lineItem = {
   price_data: {
     currency: "usd",
     product_data: {
-      name: string
+      name: string,
+      images?: string[]
     },
     unit_amount: string // price of item in cents
   },

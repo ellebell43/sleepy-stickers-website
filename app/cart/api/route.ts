@@ -3,7 +3,7 @@ import { cartItem, lineItem } from "@/util/types";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_TOKEN ?? "", { typescript: true })
 
   const cart: cartItem[] = await req.json()
@@ -24,7 +24,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
         price_data: {
           currency: "usd",
           unit_amount: priceToCentsString(el.productType.price),
-          product_data: { name: el.product.name }
+          product_data: {
+            name: `${el.productType.name}, ${el.product.name}`,
+            images: [`${process.env.HOST_ROUTE}/products/${el.product.id}.png`]
+          }
         },
         quantity: el.quantity
       }
@@ -49,13 +52,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const session: Stripe.Checkout.Session = await stripe.checkout.sessions.create(sessionParams)
     sessionURL = session.url ?? "${process.env.HOST_ROUTE}/checkout/redirect-error"
-    // return NextResponse.json({ clientSecret: session.client_secret });
   } catch (err) {
     console.log(err)
     return NextResponse.json(err, { status: 500, statusText: String(err) })
   } finally {
-    console.log(`returning stripe session url to client`)
     return NextResponse.json(sessionURL)
-    // redirect(sessionURL)
   }
 }
