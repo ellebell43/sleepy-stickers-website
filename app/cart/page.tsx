@@ -11,6 +11,7 @@ export default function Page() {
   let [cart, setCart] = useState<cartItem[]>([])
   let [totalQuantity, setTotalQuantity] = useState(0)
   let [totalPrice, setTotalPrice] = useState(0)
+  let [APIError, setAPIError] = useState<string>()
 
   useEffect(() => {
     setCart(getCartArray())
@@ -25,6 +26,19 @@ export default function Page() {
     return () => window.removeEventListener("storage", listenStorageChange)
   }, [])
 
+  const submitCart = async () => {
+    const res = await fetch("/cart/api", {
+      method: "POST",
+      body: localStorage.getItem("cart"),
+    })
+    if (res.status == 200) {
+      const data: string = await res.json()
+      window.location.replace(data)
+    } else {
+      setAPIError(`Error ${res.status}: ${res.statusText}`)
+    }
+  }
+
   return (
     <div>
       <h1>Cart!</h1>
@@ -36,8 +50,13 @@ export default function Page() {
         </div>
         <p>Total Items: {totalQuantity}</p>
         <p>Total Price: {priceToString(totalPrice)} + tax (calculated at checkout)</p>
-        <Link href="/checkout" className="border-4 block p-6 w-fit mx-auto bg-stone-100 dark:bg-stone-800 text-4xl">Checkout</Link>
+        <form onSubmit={(e) => { e.preventDefault(); submitCart() }}>
+          <button type="submit" className="border-4 block p-6 w-fit mx-auto bg-stone-100 dark:bg-stone-800 text-4xl">
+            Checkout
+          </button>
+        </form>
       </>}
+      <p>{APIError}</p>
     </div>
   )
 }

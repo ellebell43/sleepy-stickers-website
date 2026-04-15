@@ -1,9 +1,9 @@
 import { product, productType } from "./types"
 
 const allProductTypes: productType[] = [
-  { name: "Sticker - 3in", price: 4 },
-  { name: "Sticker - 2.25in", price: 3 },
-  { name: "Sticker - 1.5in", price: 2 },
+  { name: "Sticker - 3in", price: 4, id: process.env.STICKER_LARGE_ID || "" },
+  { name: "Sticker - 2.25in", price: 3, id: process.env.STICKER_MEDIUM_ID || "" },
+  { name: "Sticker - 1.5in", price: 2, id: process.env.STICKER_SMALL_ID || "" },
 ]
 
 export const catalog: product[] = [

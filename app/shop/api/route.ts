@@ -1,22 +1,28 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-export type ResponseData = {
-  message: string
+export type responseData = {
   products: Stripe.Product[]
-  features: Stripe.Entitlements.Feature[]
+  prices: Stripe.Price[]
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<NextResponse<responseData>> {
+  // Stripe connection token
   const token = process.env.STRIPE_TOKEN
 
+  // Return 401 if no token is found to create Stripe connection
   if (token == undefined) {
-    return NextResponse.json({ message: "no stripe token found", products: [] }, { status: 401, statusText: "Unauthorized. No Stripe token found for authentication." })
+    return NextResponse.json({ products: [], prices: [] }, { status: 401, statusText: "Unauthorized. No Stripe token found for authentication." })
+  } else {
+    try {
+      // Get all products and prices from Stripe and return it to the client
+      const stripe = new Stripe(token)
+      const products = await stripe.products.list()
+      const prices = await stripe.prices.list()
+      return NextResponse.json({ products: products.data, prices: prices.data })
+    } catch (err) {
+      // Error 500 if something goes wrong retrieving Stripe data
+      return NextResponse.json({ products: [], prices: [] }, { status: 500, statusText: String(err) })
+    }
   }
-
-  const stripe = new Stripe(token)
-  const products = await stripe.products.list()
-  const features = await stripe.entitlements.features.list()
-  return NextResponse.json({ message: 'success', products: products.data, features: features.data })
 }

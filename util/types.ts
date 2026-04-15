@@ -17,8 +17,9 @@ export type product = {
 }
 
 export type productType = {
+  id: string,
   name: string,
-  price: number
+  price: number,
 }
 
 export type productTag =
@@ -27,3 +28,22 @@ export type productTag =
   "pride" |
   "scene" |
   "text"
+
+export type priceData = {
+  currency: "usd",
+  product_data: {
+    name: string
+  },
+  unit_amount: string // price of item in cents
+}
+
+export type lineItem = {
+  price_data: {
+    currency: "usd",
+    product_data: {
+      name: string
+    },
+    unit_amount: string // price of item in cents
+  },
+  quantity: number
+}
