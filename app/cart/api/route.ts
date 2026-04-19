@@ -17,8 +17,10 @@ export async function POST(req: NextRequest) {
   }
 
   // Create an array of line items to be used in Stripe checkout session creation
+  let totalCost = 0
   const lineItemsArr: lineItem[] = []
   cart.map((el) => {
+    totalCost += el.productType.price * el.quantity
     lineItemsArr.push(
       {
         price_data: {
@@ -44,6 +46,54 @@ export async function POST(req: NextRequest) {
     line_items: lineItemsArr,
     success_url: `${process.env.HOST_ROUTE}/cart/?session_id={CHECKOUT_SESSION_ID}&status=complete`,
     cancel_url: `${process.env.HOST_ROUTE}/cart/?session_id={CHECKOUT_SESSION_ID}&status=canceled`,
+    billing_address_collection: "required",
+    automatic_tax: { enabled: false },
+    shipping_address_collection: {
+      allowed_countries: ["US"],
+    },
+    // shipping_options: shipping,
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: {
+            amount: 500,
+            currency: "usd"
+          },
+          display_name: "Standard Shipping",
+          delivery_estimate: {
+            minimum: {
+              unit: "business_day",
+              value: 3
+            },
+            maximum: {
+              unit: "business_day",
+              value: 5
+            }
+          }
+        }
+      },
+      totalCost >= 15 ? {  // Free shipping option if total cost is greater than $15
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: {
+            amount: 0,
+            currency: "usd"
+          },
+          display_name: "Free Shipping!",
+          delivery_estimate: {
+            minimum: {
+              unit: "business_day",
+              value: 3
+            },
+            maximum: {
+              unit: "business_day",
+              value: 5
+            }
+          }
+        }
+      } : {}
+    ]
   }
 
   let sessionURL: string = ""
