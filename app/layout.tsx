@@ -59,7 +59,7 @@ export default function RootLayout({
           </Link>
 
           {/* Contact Link */}
-          <Link href="#/contact" className="hover:opacity-70 transition-all">
+          <Link href="/contact" className="hover:opacity-70 transition-all">
             <div className="flex items-center">
               <Image src="/images/mail.png" alt="An envelope icon on a 16x16 pixel art canvas using just simple black lines" title="Contact Me" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
               <p className="ml-1 hidden md:block">Contact</p>
