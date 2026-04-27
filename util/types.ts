@@ -9,8 +9,7 @@ export type product = {
   name: string,
   description: string,
   image: string[],
-  variant: boolean,
-  variantOf?: string,
+  variantOf?: string | null,
   availableTypes: productType[],
   canvasSize: string,
   tags?: productTag[]
@@ -27,7 +26,8 @@ export type productTag =
   "character" |
   "pride" |
   "scene" |
-  "text"
+  "text" |
+  "oc character"
 
 export type priceData = {
   currency: "usd",

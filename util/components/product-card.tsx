@@ -1,6 +1,5 @@
 'use client'
 
-import Stripe from 'stripe'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { cartItem, product, productType } from '../types'
@@ -82,7 +81,7 @@ export default function ProductCard(props: { product: product, key: number, vari
         (selectedProductTypeIndex == index);
 
       return (
-        <button onClick={() => setSelectedProductTypeIndex(!variant ? undefined : index)} className={`rounded-full transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
+        <button onClick={() => setSelectedProductTypeIndex(!variant ? undefined : index)} className={`rounded-full overflow-hidden transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
           <Image src={src} alt={alt} width={64} height={64} loading="eager" />
         </button>
       )
@@ -146,7 +145,7 @@ export default function ProductCard(props: { product: product, key: number, vari
             </div>
           </div>
 
-          {/* ======== PRODUCT product.availableTypes ======== */}
+          {/* ======== PRODUCT DETAILS ======== */}
           <div className='flex flex-col items-center justify-center'>
             <p className='max-w-xs mx-auto my-4'>{product.description}</p>
 
@@ -183,7 +182,7 @@ export default function ProductCard(props: { product: product, key: number, vari
 
   return (
     <>
-      <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 hover:bg-gray-100 dark:hover:bg-gray-700">
+      <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 bg-gray-50 dark:bg-gray-700 shadow-xl">
         <Image src={`/products/${product.id}.png`} alt={product.description} height={128} width={128} className="mb-4" loading="eager" />
         <p className="text-center m-0 relative">{product.name}</p>
       </button>
