@@ -1,9 +1,9 @@
 import { product, productType } from "./types"
 
 const allProductTypes: productType[] = [
-  { name: "Sticker - 4in", price: 4, id: process.env.STICKER_LARGE_ID || "" },
-  { name: "Sticker - 3in", price: 3, id: process.env.STICKER_MEDIUM_ID || "" },
-  { name: "Sticker - 2in", price: 2, id: process.env.STICKER_SMALL_ID || "" },
+  { name: "Sticker - 4in", price: 4, id: process.env.STICKER_LARGE_ID || "s4" },
+  { name: "Sticker - 3in", price: 3, id: process.env.STICKER_MEDIUM_ID || "s3" },
+  { name: "Sticker - 2in", price: 2, id: process.env.STICKER_SMALL_ID || "s2" },
   // { name: "Pin", price: 5, id: process.env.STICKER_SMALL_ID || "" },
 ]
 

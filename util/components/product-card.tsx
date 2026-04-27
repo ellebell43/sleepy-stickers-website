@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { cartItem, product, productType } from '../types'
 import { addItemToCart, findItemIndex, getCartArray, removeItemFromCart, updateItemQuantity } from '../cart-helpers'
 import { DecreaseButton, IncreaseButton } from './buttons'
-import { priceToString } from '../general-helpers'
+import { breakupName, priceToString } from '../general-helpers'
 
 export default function ProductCard(props: { product: product, key: number, variants?: product[] }) {
   const { product, key, variants } = props
@@ -14,7 +14,7 @@ export default function ProductCard(props: { product: product, key: number, vari
 
   const Details = () => {
     // State variables
-    const [selectedProductTypeIndex, setSelectedProductTypeIndex] = useState<undefined | number>(undefined)
+    const [selectedProductIndex, setSelectedProductIndex] = useState<undefined | number>(undefined)
     const [quantity, setQuantity] = useState(0)
     const [itemInCart, setItemInCart] = useState(false)
     const [productTypeIndex, setProductTypeIndex] = useState(2)
@@ -22,20 +22,9 @@ export default function ProductCard(props: { product: product, key: number, vari
 
     useEffect(() => {
       setPrice(quantity * Number(product.availableTypes[productTypeIndex].price))
-    }, [quantity, selectedProductTypeIndex, productTypeIndex])
+    }, [quantity, selectedProductIndex, productTypeIndex])
 
-    const getActiveProduct = () => {
-      return selectedProductTypeIndex && variants ? variants[selectedProductTypeIndex] : product
-    }
-
-    const getIndex = (): number | undefined => {
-      const activeProduct = getActiveProduct()
-      const index = findItemIndex(activeProduct.id)
-      return index
-    }
-
-
-    // set selected feature to 1.5in by default when the detail panel first opens
+    // set selected feature to 2in by default when the detail panel first opens
     useEffect(() => {
       product.availableTypes.map((el: productType, i: number) => { if (el.name == "1.5in sticker") setProductTypeIndex(i) })
     }, [])
@@ -43,10 +32,20 @@ export default function ProductCard(props: { product: product, key: number, vari
     // update quantity based on cart anytime variant or feature changes
     useEffect(() => {
       getCartStorageQuantity()
-    }, [selectedProductTypeIndex, productTypeIndex])
+    }, [selectedProductIndex, productTypeIndex])
+
+    const getActiveProduct = () => {
+      return selectedProductIndex != undefined && variants ? variants[selectedProductIndex] : product
+    }
+
+    const getIndex = (): number | undefined => {
+      const activeProduct = getActiveProduct()
+      const index = findItemIndex(activeProduct.id, activeProduct.availableTypes[productTypeIndex].id)
+      return index
+    }
 
     const getSelectedProduct = (): product => {
-      return selectedProductTypeIndex != undefined && variants ? variants[selectedProductTypeIndex] : product
+      return selectedProductIndex != undefined && variants ? variants[selectedProductIndex] : product
     }
 
     // determine if item is in cart and update displayed quantity accordingly
@@ -62,26 +61,16 @@ export default function ProductCard(props: { product: product, key: number, vari
       }
     }
 
-    // Determine name used in details panel
-    const breakupName = (name: string, containerStyle?: string, textStyle?: string) => {
-      const names = name.split(" - ")
-      return (
-        <div className={containerStyle}>
-          {names.map((el, i) => <p className={textStyle} key={i}>{el}</p>)}
-        </div>
-      )
-    }
-
     // Component for selecting product variants
     const VariantButton = (props: { src: string, alt: string, variant: boolean, index?: number }) => {
       const { src, alt, variant, index } = props
 
       const active =
-        (selectedProductTypeIndex == undefined && variant == false) ||
-        (selectedProductTypeIndex == index);
+        (selectedProductIndex == undefined && variant == false) ||
+        (selectedProductIndex == index);
 
       return (
-        <button onClick={() => setSelectedProductTypeIndex(!variant ? undefined : index)} className={`rounded-full overflow-hidden transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
+        <button onClick={() => setSelectedProductIndex(!variant ? undefined : index)} className={`rounded-full overflow-hidden transition-all border-2 ${active ? "border-stone-800 dark:border-stone-100 shadow-lg" : "border-stone-100 dark:border-stone-800 shadow-none"}`}>
           <Image src={src} alt={alt} width={64} height={64} loading="eager" />
         </button>
       )
@@ -89,10 +78,10 @@ export default function ProductCard(props: { product: product, key: number, vari
 
     // Add selected product to cart
     const updateCartItem = () => {
-      const productSelected: product = selectedProductTypeIndex != undefined && variants ? variants[selectedProductTypeIndex] : product
+      const productSelected: product = selectedProductIndex != undefined && variants ? variants[selectedProductIndex] : product
       const productType = product.availableTypes[productTypeIndex]
       const item: cartItem = { product: productSelected, productType, quantity }
-      const index = findItemIndex(item.product.id)
+      const index = findItemIndex(item.product.id, productType.id)
 
       // if item is in the cart, update quantity
       if (index != undefined) {
@@ -171,7 +160,7 @@ export default function ProductCard(props: { product: product, key: number, vari
             <p className='text-3xl text-center my-4'>{priceToString(price)} USD</p>
 
             {/* add to cart button */}
-            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : "Add to Cart"}</button>
+            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' disabled={quantity == 0} onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}</button>
           </div>
         </div>
       </div>

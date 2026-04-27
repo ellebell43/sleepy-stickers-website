@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { getCartTotalQuantity } from "@/util/cart-helpers";
+import Cart from "@/util/components/cart";
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
 const iconSize = 16 * 2
@@ -19,6 +20,7 @@ export default function RootLayout({
 }>) {
   const [quantity, setQuantity] = useState(0)
   const [showNav, setShowNav] = useState(false)
+  const [showCart, setShowCart] = useState(false)
 
   // listen for storage change events and update cart quantity when it happens
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function RootLayout({
         <Analytics />
         {/* ======== HEADER ======== */}
         <header className={`w-full px-5 flex justify-between items-center gap-12 md:gap-8 shadow-md pb-2 pt-3 z-10 border-b-4 relative`}>
-          <nav id="navigation" className={`fixed top-0 ${showNav ? "right-0" : "-right-87.5"} transition-all duration-1000 border-l-4 bg-white p-8 pr-32 text-4xl flex flex-col gap-8 h-screen z-50`} >
+          <nav id="navigation" className={`fixed top-0 ${showNav ? "right-0" : "-right-87.5"} transition-all duration-1000 border-l-4 bg-white dark:bg-gray-800 p-8 pr-32 text-4xl flex flex-col gap-8 h-screen z-50`} >
             {/* Close nav menu button */}
             <button className="absolute right-4 top-4" aria-label="toggle navigation menu visibility" onClick={() => { setShowNav(!showNav) }}>
               <Image src="/images/x-button.png" alt="x button icon" height={iconSize} width={iconSize} />
@@ -84,25 +86,28 @@ export default function RootLayout({
             <Image src="/images/sleepy-stickers-logo-words.png" alt="Sleepy Stickers Logo" width={32 * 3} height={32 * 3} />
           </Link>
 
-          {/* TO DO: CONVERT CART TO BUTTON THAT SHOWS SIDE PANEL */}
-
           {/* Cart Link */}
           <div className="flex justify-center items-center gap-6">
-            <Link href="/cart" className="hover:opacity-70 transition-all">
+            <button className="hover:opacity-70 transition-all" onClick={() => setShowCart(!showCart)}>
               <div className="flex items-center">
                 <p className="text-sm">{quantity}</p>
                 <Image src="/images/cart.png" alt="shopping cart icon" title="Cart" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
                 <p className="absolute scale-0">Cart</p>
               </div>
-            </Link>
+            </button>
             {/* Menu Toggle Button */}
-            <button onClick={() => setShowNav(!showNav)} aria-label="toggle navigation menu visibility" >
+            <button onClick={() => setShowNav(!showNav)} aria-label="toggle navigation menu visibility" className="dark:invert" >
               <Image src="/images/menu.png" width={iconSize} height={iconSize} alt="menu icon" />
             </button>
           </div>
-          <section id="cart" className="fixed">
-            {/* <h1>Cart</h1> */}
-          </section>
+
+          <div className={`fixed bg-white dark:bg-gray-800 border-l-4 top-0 ${showCart ? "right-0" : "-right-300"} h-screen p-4 transition-all duration-1000`}>
+            {/* Close cart button */}
+            <button className="absolute right-4 top-4 dark:invert" aria-label="toggle cart visibility" onClick={() => { setShowCart(!showCart) }}>
+              <Image src="/images/x-button.png" alt="x button icon" height={iconSize} width={iconSize} />
+            </button>
+            <Cart />
+          </div>
         </header>
         <main className="pt-18 px-4 w-full min-h-screen">
           {children}

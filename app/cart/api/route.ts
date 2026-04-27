@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
     payment_method_types: ["card"],
     // @ts-ignore
     line_items: lineItemsArr,
-    success_url: `${process.env.HOST_ROUTE}/cart/?session_id={CHECKOUT_SESSION_ID}&status=complete`,
-    cancel_url: `${process.env.HOST_ROUTE}/cart/?session_id={CHECKOUT_SESSION_ID}&status=canceled`,
+    success_url: `${process.env.HOST_ROUTE}/?session_id={CHECKOUT_SESSION_ID}&status=complete`,
+    cancel_url: `${process.env.HOST_ROUTE}/?session_id={CHECKOUT_SESSION_ID}&status=canceled`,
     billing_address_collection: "required",
     automatic_tax: { enabled: false },
     shipping_address_collection: {

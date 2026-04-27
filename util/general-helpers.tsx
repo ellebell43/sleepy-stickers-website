@@ -35,3 +35,12 @@ export const priceToCentsString = (price: number): string => {
     }
   }
 }
+
+export const breakupName = (name: string, containerStyle?: string, textStyle?: string) => {
+  const names = name.split(" - ")
+  return (
+    <div className={containerStyle}>
+      {names.map((el, i) => <p className={textStyle} key={i}>{el}</p>)}
+    </div>
+  )
+}
