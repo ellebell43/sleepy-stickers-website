@@ -1,11 +1,18 @@
 @import "tailwindcss";
 
+:root {
+  --theme-bg: #ffebdf;
+  --theme-bg-dark: #632e0f;
+  --theme-main: #8FAF54;
+  --theme-accent: #7f4321;
+}
+
 @media (prefers-color-scheme: light) {
 
   html,
   body {
-    cursor: url("/images/cursor-default-inverted.png"), default;
-    /* just change the cursor.ico path to your location */
+    cursor: url("/images/cursor-default.png"), default;
+    @apply bg-(--theme-bg)
   }
 
   .cursor-pixel-pointer,
@@ -19,8 +26,8 @@
 
   html,
   body {
-    cursor: url("/images/cursor-default.png"), default;
-    /* just change the cursor.ico path to your location */
+    cursor: url("/images/cursor-default-inverted.png"), default;
+    @apply bg-(--theme-bg-dark) text-white
   }
 
   .cursor-pixel-pointer,
@@ -42,7 +49,12 @@ img {
   image-rendering: crisp-edges;
 }
 
+button,
+a {
+  @apply transition-all
+}
+
 button:hover:enabled,
 a:hover {
-  @apply opacity-70
+  @apply opacity-70 scale-110
 }

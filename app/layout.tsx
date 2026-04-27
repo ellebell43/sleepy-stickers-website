@@ -1,6 +1,5 @@
 'use client'
 
-import { cartItem } from "@/util/types";
 import "./globals.css";
 import localFont from 'next/font/local'
 import Image from "next/image";
@@ -11,7 +10,6 @@ import { Analytics } from "@vercel/analytics/next"
 import { getCartTotalQuantity } from "@/util/cart-helpers";
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
-
 const iconSize = 16 * 2
 
 export default function RootLayout({
@@ -20,6 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [quantity, setQuantity] = useState(0)
+  const [showNav, setShowNav] = useState(false)
 
   // listen for storage change events and update cart quantity when it happens
   useEffect(() => {
@@ -36,52 +35,74 @@ export default function RootLayout({
       lang="en"
       className={`h-full ${fontAseprite.className}`}
     >
-      <body className={`min-h-full w-full flex flex-col mx-auto antialiased transition-all ${fontAseprite.className} text-black dark:text-white bg-stone-100 dark:bg-stone-800`}>
+      <body className={`min-h-full w-full flex flex-col mx-auto antialiased transition-all ${fontAseprite.className}`}>
         <SpeedInsights />
         <Analytics />
-
         {/* ======== HEADER ======== */}
-        <header className="w-full px-5 flex justify-center gap-12 md:gap-8 shadow-md pb-2 pt-3 fixed z-10 bg-stone-50 dark:bg-stone-900 border-b-4">
-          {/* Home Link */}
-          <Link href="/" className="hover:opacity-70 transition-all">
-            <div className="flex items-center">
-              <Image src="/images/home.png" alt="A home icon on a 16x16 pixel art canvas using just simple black lines" title="Home" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
-              <p className="ml-1 hidden md:block">Home</p>
-            </div>
+        <header className={`w-full px-5 flex justify-between items-center gap-12 md:gap-8 shadow-md pb-2 pt-3 z-10 border-b-4 relative`}>
+          <nav id="navigation" className={`fixed top-0 ${showNav ? "right-0" : "-right-87.5"} transition-all duration-1000 border-l-4 bg-white p-8 pr-32 text-4xl flex flex-col gap-8 h-screen z-50`} >
+            {/* Close nav menu button */}
+            <button className="absolute right-4 top-4" aria-label="toggle navigation menu visibility" onClick={() => { setShowNav(!showNav) }}>
+              <Image src="/images/x-button.png" alt="x button icon" height={iconSize} width={iconSize} />
+            </button>
+
+            {/* Home Link */}
+            <Link href="/" className="hover:opacity-70 transition-all" onClick={() => setShowNav(false)}>
+              <div className="flex items-center">
+                {/* <Image src="/images/home.png" alt="A home icon on a 16x16 pixel art canvas using just simple black lines" title="Home" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} /> */}
+                <p className="block">Home</p>
+              </div>
+            </Link>
+
+            {/* Shop Link */}
+            <Link href="/shop" className="hover:opacity-70 transition-all" onClick={() => setShowNav(false)}>
+              <div className="flex items-center">
+                {/* <Image src="/images/shop.png" alt="A store front icon on a 16x16 pixel art canvas using just simple black lines" title="Shop" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} /> */}
+                <p className="block">Shop</p>
+              </div>
+            </Link>
+
+            {/* Contact Link */}
+            <Link href="/contact" className="hover:opacity-70 transition-all" onClick={() => setShowNav(false)}>
+              <div className="flex items-center">
+                {/* <Image src="/images/mail.png" alt="An envelope icon on a 16x16 pixel art canvas using just simple black lines" title="Contact Me" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} /> */}
+                <p className="block">Contact</p>
+              </div>
+            </Link>
+
+            {/* Gallery Link */}
+            <Link href="#/gallery" className="hover:opacity-70 transition-all" onClick={() => setShowNav(false)}>
+              <div className="flex items-center">
+                {/* <Image src="/images/gallery.png" alt="A gallery icon on a 16x16 pixel art canvas using just simple black lines" title="Gallery" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} /> */}
+                <p className="block">Gallery</p>
+              </div>
+            </Link>
+          </nav>
+
+          <Link href="/">
+            <p className="absolute scale-0">Home</p>
+            <Image src="/images/sleepy-stickers-logo-words.png" alt="Sleepy Stickers Logo" width={32 * 3} height={32 * 3} />
           </Link>
 
-          {/* Shop Link */}
-          <Link href="/shop" className="hover:opacity-70 transition-all">
-            <div className="flex items-center">
-              <Image src="/images/shop.png" alt="A store front icon on a 16x16 pixel art canvas using just simple black lines" title="Shop" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
-              <p className="ml-1 hidden md:block">Shop</p>
-            </div>
-          </Link>
-
-          {/* Contact Link */}
-          <Link href="/contact" className="hover:opacity-70 transition-all">
-            <div className="flex items-center">
-              <Image src="/images/mail.png" alt="An envelope icon on a 16x16 pixel art canvas using just simple black lines" title="Contact Me" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
-              <p className="ml-1 hidden md:block">Contact</p>
-            </div>
-          </Link>
-
-          {/* Gallery Link */}
-          <Link href="#/gallery" className="hover:opacity-70 transition-all">
-            <div className="flex items-center">
-              <Image src="/images/gallery.png" alt="A gallery icon on a 16x16 pixel art canvas using just simple black lines" title="Gallery" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
-              <p className="ml-1 hidden md:block">Gallery</p>
-            </div>
-          </Link>
+          {/* TO DO: CONVERT CART TO BUTTON THAT SHOWS SIDE PANEL */}
 
           {/* Cart Link */}
-          <Link href="/cart" className="hover:opacity-70 transition-all">
-            <div className="flex items-center">
-              <p className="text-sm">{quantity}</p>
-              <Image src="/images/cart.png" alt="A shopping cart icon on a 16x16 pixel art canvas using just simple black lines" title="Cart" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
-              <p className="ml-1 hidden md:block">Cart</p>
-            </div>
-          </Link>
+          <div className="flex justify-center items-center gap-6">
+            <Link href="/cart" className="hover:opacity-70 transition-all">
+              <div className="flex items-center">
+                <p className="text-sm">{quantity}</p>
+                <Image src="/images/cart.png" alt="shopping cart icon" title="Cart" className="dark:invert relative bottom-1" height={iconSize} width={iconSize} />
+                <p className="absolute scale-0">Cart</p>
+              </div>
+            </Link>
+            {/* Menu Toggle Button */}
+            <button onClick={() => setShowNav(!showNav)} aria-label="toggle navigation menu visibility" >
+              <Image src="/images/menu.png" width={iconSize} height={iconSize} alt="menu icon" />
+            </button>
+          </div>
+          <section id="cart" className="fixed">
+            {/* <h1>Cart</h1> */}
+          </section>
         </header>
         <main className="pt-18 px-4 w-full min-h-screen">
           {children}
