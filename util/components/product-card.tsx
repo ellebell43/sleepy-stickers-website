@@ -105,7 +105,7 @@ export default function ProductCard(props: { product: product, key: number, vari
       // ======== LETTER BOX ========
       <div className='fixed top-0 left-0 w-screen h-screen bg-black/25 dark:bg-white/25 flex items-center justify-center z-50'>
         {/* ======== CONTENT BOX ======== */}
-        <div className='bg-white dark:bg-black w-screen md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center justify-center lg:flex-row lg:gap-6'>
+        <div className='bg-white dark:bg-black w-screen md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center justify-center lg:flex-row lg:gap-6 overflow-y-scroll'>
 
           {/* ======== CLOSE BUTTON ======== */}
           <button className='hover:cursor-pointer absolute top-2 right-2' onClick={() => setShowDetails(false)}>
@@ -160,7 +160,7 @@ export default function ProductCard(props: { product: product, key: number, vari
             <p className='text-3xl text-center my-4'>{priceToString(price)} USD</p>
 
             {/* add to cart button */}
-            <button className='border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-sm lg:w-3/4' disabled={quantity == 0} onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}</button>
+            <button className="border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-75 lg:w-3/4 disabled:opacity-50" disabled={quantity == 0} onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}</button>
           </div>
         </div>
       </div>

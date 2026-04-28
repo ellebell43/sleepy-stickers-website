@@ -4,11 +4,12 @@ import "./globals.css";
 import localFont from 'next/font/local'
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import { getCartTotalQuantity } from "@/util/cart-helpers";
 import Cart from "@/util/components/cart";
+import Spinner from "@/util/components/spinner";
 
 const fontAseprite = localFont({ src: '../public/fonts/aseprite.otf/aseprite.otf' })
 const iconSize = 16 * 2
@@ -44,7 +45,7 @@ export default function RootLayout({
         <header className={`w-full px-5 flex justify-between items-center gap-12 md:gap-8 shadow-md pb-2 pt-3 z-10 border-b-4 relative`}>
           <nav id="navigation" className={`fixed top-0 ${showNav ? "right-0" : "-right-87.5"} transition-all duration-1000 border-l-4 bg-white dark:bg-gray-800 p-8 pr-32 text-4xl flex flex-col gap-8 h-screen z-50`} >
             {/* Close nav menu button */}
-            <button className="absolute right-4 top-4" aria-label="toggle navigation menu visibility" onClick={() => { setShowNav(!showNav) }}>
+            <button className="absolute right-4 top-4" aria-label="toggle navigation menu visibility" onClick={() => { setShowNav(false); setShowCart(false) }}>
               <Image src="/images/x-button.png" alt="x button icon" height={iconSize} width={iconSize} />
             </button>
 
@@ -106,14 +107,18 @@ export default function RootLayout({
             <button className="absolute right-4 top-4 dark:invert" aria-label="toggle cart visibility" onClick={() => { setShowCart(!showCart) }}>
               <Image src="/images/x-button.png" alt="x button icon" height={iconSize} width={iconSize} />
             </button>
-            <Cart />
+            <section id="cart" className="w-75 pt-10">
+              <Suspense fallback={<Spinner />}>
+                <Cart />
+              </Suspense>
+            </section>
           </div>
         </header>
         <main className="pt-18 px-4 w-full min-h-screen">
           {children}
         </main>
-        <footer className="bg-slate-700 text-white pt-10 px-6 pb-4 border-t-4 border-black">
-          <h2 className="text-xl mb-4">Credits</h2>
+        <footer className="bg-slate-700 text-white pt-10 px-6 pb-4 border-t-4 border-black mt-8">
+          <h2 className="text-xl mb-4 border-b-2">Credits</h2>
           <p>Art by <strong>Elle Brooks</strong>.</p>
           <p>Tangible products made by <strong>Elle Brooks</strong>.</p>
           <p>Site programming by <strong>Elle Brooks</strong> using Next.js.</p>

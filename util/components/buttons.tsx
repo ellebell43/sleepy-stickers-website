@@ -9,6 +9,7 @@ export const IncreaseButton = (props: { canIncrease: boolean, onIncrease: Functi
       }}
       disabled={!canIncrease}
       className={`${!canIncrease ? "opacity-30 hover:opacity-30" : ""} dark:invert ${styling}`}
+      aria-label="increase quantity button"
     >
       <Image src="/images/plus.png" alt="plus icon" height={size} width={size} />
     </button>
@@ -24,6 +25,7 @@ export const DecreaseButton = (props: { canDecrease: boolean, onDecrease: Functi
       }}
       disabled={!canDecrease}
       className={`${!canDecrease ? "opacity-30 hover:opacity-30" : ""} dark:invert ${styling}`}
+      aria-label="decrease quantity button"
     >
       <Image src="/images/minus.png" alt="minus icon" height={size} width={size} />
     </button>
@@ -39,6 +41,7 @@ export const TrashButton = (props: { canTrash: boolean, onTrash: Function, size:
       }}
       disabled={!canTrash}
       className={`${!canTrash ? "opacity-30 hover:opacity-30" : ""} dark:invert ${styling}`}
+      aria-label="remove item button"
     >
       <Image src="/images/trash.png" alt="trash icon" height={size} width={size} />
     </button>

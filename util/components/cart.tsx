@@ -6,7 +6,7 @@ import CartItem from "@/util/components/cart-item"
 import { getCartArray, getCartTotalPrice, getCartTotalQuantity } from "@/util/cart-helpers"
 import { priceToString } from "@/util/general-helpers"
 import { useSearchParams } from "next/navigation"
-import Link from "next/link"
+import Image from "next/image"
 
 export default function Cart() {
   let [cart, setCart] = useState<cartItem[]>([])
@@ -14,6 +14,7 @@ export default function Cart() {
   let [totalPrice, setTotalPrice] = useState(0)
   let [APIError, setAPIError] = useState<string>()
   let [status, setStatus] = useState<string | null>(null)
+  let [hideNotice, setHideNotice] = useState(false)
 
   let urlParams = useSearchParams()
 
@@ -21,6 +22,7 @@ export default function Cart() {
     const status = urlParams.get("status")
     if (status == "complete") {
       localStorage.setItem("cart", JSON.stringify([]))
+      setTimeout(() => { setHideNotice(true) }, 10000)
     } else {
       setTotalPrice(getCartTotalPrice())
       setTotalQuantity(getCartTotalQuantity())
@@ -47,36 +49,40 @@ export default function Cart() {
       window.location.replace(data)
     } else {
       setAPIError(`Error ${res.status}: ${res.statusText}`)
+      setTimeout(() => { setHideNotice(true) }, 5000)
     }
   }
 
   return (
-    <section id="cart" className="w-[300px] pt-10 h-screen overflow-y-scroll">
+    <>
       {/* <h1>Cart!</h1> */}
       {cart.length == 0 ? <>
-        <p>Looks like your cart is empty! Explore the <Link href="/shop" className="underline">shop</Link> to find stickers and art for purchase!</p>
+        <p className="text-xl">Looks like your cart is empty! So here's a fish instead: <Image className="inline" src="/products/32x32-000006.png" alt="" height={32} width={32} />. He doesn't know where anything is, though...</p>
       </> : <>
-        <div className="">
+        {/* Cart contents */}
+        <ul id="cart-items" className="max-h-[500px] md:max-h-[800px] border-b-4 overflow-y-scroll">
           {cart.map((el: cartItem, i: number) => <CartItem item={el} key={i} />)}
-        </div>
+        </ul>
+        {/* Cart breakdown */}
         <p>Total Items: {totalQuantity}</p>
         <p>Total Price: {priceToString(totalPrice)} + tax (calculated at checkout)</p>
         {/* checkout button */}
         <form onSubmit={(e) => { e.preventDefault(); submitCart() }}>
-          <button type="submit" className="border-4 block p-6 w-fit mx-auto mt-6 bg-stone-100 dark:bg-stone-800 text-2xl">
+          <button type="submit" className="border-4 block p-6 max-w-[300px] mx-auto mt-6 bg-stone-100 dark:bg-stone-800 text-2xl">
             Checkout
           </button>
         </form>
       </>}
+      {/* Success message */}
       {APIError ?
-        <div className="border-4 bg-red-400 dark:bg-red-800 py-6 px-10 w-fit mx-auto">
+        <section id="notification" className={`border-4 bg-red-200 dark:bg-red-800 py-6 px-10 w-fit mx-auto fixed bottom-8  ${hideNotice ? "-left-150" : "left-8"} transition-all duration-1000`}>
           <p className="text-center">{APIError}</p>
-        </div> : status == "complete" ?
-          <div className="border-4 bg-green-400 dark:bg-green-800 py-6 px-10 w-fit mx-auto">
+        </section> : status == "complete" ?
+          <section id="notification" className={`border-4 bg-green-200 dark:bg-green-800 py-6 px-10 w-fit mx-auto fixed bottom-8  ${hideNotice ? "-left-150" : "left-8"} transition-all duration-1000`}>
             <p className="text-center">Payment successful! Thank you for your purchase!</p>
             <p className="text-center">Check your email for a receipt and shipping info.</p>
-          </div>
+          </section>
           : <></>}
-    </section>
+    </>
   )
 }

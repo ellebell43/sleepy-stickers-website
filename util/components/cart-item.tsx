@@ -7,7 +7,7 @@ import { findItemIndex, removeItemFromCart, updateItemQuantity } from "../cart-h
 export default function CartItem(props: { item: cartItem }) {
   const { item } = props
   const index = findItemIndex(item.product.id, item.productType.id)
-  const buttonSize = 20
+  const buttonSize = 16
 
   function removeItem() {
     if (index != undefined) removeItemFromCart(index)
@@ -24,27 +24,32 @@ export default function CartItem(props: { item: cartItem }) {
   }
 
   return (
-    <div className="border-b-4 border-stone-200 dark:border-stone-600 py-2">
+    <li className="border-b-4 border-stone-200 dark:border-stone-600 py-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
+          {/* Product image */}
           <Image src={`/products/${item.product.id}.png`} alt={item.product.description} height={64} width={64} loading="eager" />
+          {/* Product type and name */}
           <div>
             <p>{item.productType.name}</p>
             {breakupName(item.product.name, "", "text-xs leading-none")}
           </div>
         </div>
-        <p className="leading-none m-0 text-lg my-0">{priceToString(item.quantity * item.productType.price)}</p>
       </div>
       <div className="flex justify-between">
         {/* Increase/Decrease/Remove buttons */}
-        <div className="flex gap-4">
+        <div className="flex gap-4 justify-center items-center">
           <IncreaseButton canIncrease={item.quantity < 10} onIncrease={() => incrementQuantity(1)} size={buttonSize} />
-          <p>{item.quantity}</p>
+          {/* <p id="item quantity" className="text-2xl">{item.quantity}</p> */}
           <DecreaseButton canDecrease={item.quantity > 0} onDecrease={() => incrementQuantity(-1)} size={buttonSize} />
           <TrashButton canTrash={true} onTrash={() => removeItem()} size={buttonSize} />
         </div>
-        <p className="leading-none m-0 my-0 opacity-70">{item.quantity} x {priceToString(item.productType.price)}</p>
+        {/* Price and Breakdown */}
+        <div className="flex flex-col">
+          <p className="leading-none m-0 text-lg my-0">{priceToString(item.quantity * item.productType.price)}</p>
+          <p className="leading-none m-0 my-0 text-xs opacity-70">{item.quantity} x {priceToString(item.productType.price)}</p>
+        </div>
       </div>
-    </div>
+    </li>
   )
 }
