@@ -6,7 +6,7 @@ import { findItemIndex, removeItemFromCart, updateItemQuantity } from "../cart-h
 
 export default function CartItem(props: { item: cartItem }) {
   const { item } = props
-  const index = findItemIndex(item.product.id, item.productType.id)
+  const index = findItemIndex(item.product.id, item.productType.id, item.size.id)
   const buttonSize = 16
 
   function removeItem() {
@@ -31,7 +31,7 @@ export default function CartItem(props: { item: cartItem }) {
           <Image src={`/products/${item.product.id}.png`} alt={item.product.description} height={64} width={64} loading="eager" />
           {/* Product type and name */}
           <div>
-            <p>{item.productType.name}</p>
+            <p>{item.size.name} {item.productType.name}</p>
             {breakupName(item.product.name, "", "text-xs leading-none")}
           </div>
         </div>
@@ -46,8 +46,8 @@ export default function CartItem(props: { item: cartItem }) {
         </div>
         {/* Price and Breakdown */}
         <div className="flex flex-col">
-          <p className="leading-none m-0 text-lg my-0">{priceToString(item.quantity * item.productType.price)}</p>
-          <p className="leading-none m-0 my-0 text-xs opacity-70">{item.quantity} x {priceToString(item.productType.price)}</p>
+          <p className="leading-none m-0 text-lg my-0">{priceToString(item.quantity * (item.productType.price + item.size.price))}</p>
+          <p className="leading-none m-0 my-0 text-xs opacity-70">{item.quantity} x {priceToString(item.productType.price + item.size.price)}</p>
         </div>
       </div>
     </li>

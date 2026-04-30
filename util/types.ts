@@ -1,6 +1,7 @@
 export type cartItem = {
   product: product,
   productType: productType,
+  size: productSize,
   quantity: number
 }
 
@@ -11,6 +12,7 @@ export type product = {
   image: string[],
   variantOf?: string | null,
   availableTypes: productType[],
+  availableSizes: productSize[]
   canvasSize: string,
   tags?: productTag[]
 }
@@ -19,6 +21,12 @@ export type productType = {
   id: string,
   name: string,
   price: number,
+}
+
+export type productSize = {
+  id: string,
+  name: string,
+  price: number
 }
 
 export type productTag =

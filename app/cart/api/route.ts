@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       {
         price_data: {
           currency: "usd",
-          unit_amount: priceToCentsString(el.productType.price),
+          unit_amount: priceToCentsString(el.productType.price + el.size.price),
           product_data: {
             name: `${el.productType.name}, ${el.product.name}`,
             images: [`${process.env.HOST_ROUTE}/products/${el.product.id}.png`]

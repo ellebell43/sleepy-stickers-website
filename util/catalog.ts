@@ -1,10 +1,15 @@
-import { product, productType } from "./types"
+import { product, productType, productSize } from "./types"
 
-const allProductTypes: productType[] = [
-  { name: "Sticker - 4in", price: 4, id: process.env.STICKER_LARGE_ID || "s4" },
-  { name: "Sticker - 3in", price: 3, id: process.env.STICKER_MEDIUM_ID || "s3" },
-  { name: "Sticker - 2in", price: 2, id: process.env.STICKER_SMALL_ID || "s2" },
-  // { name: "Pin", price: 5, id: process.env.STICKER_SMALL_ID || "" },
+export const allProductTypes: productType[] = [
+  { name: "Temporary Tattoo", price: 0.50, id: "tattoo" },
+  { name: "Holographic Sticker", price: 0.25, id: "holo" },
+  { name: "Regular Sticker", price: 0.00, id: "regular" },
+]
+
+export const allProductSizes: productSize[] = [
+  { name: "4in", price: 4.00, id: "large" },
+  { name: "3in", price: 3.00, id: "medium" },
+  { name: "2in", price: 2.00, id: "small" },
 ]
 
 export const catalog: product[] = [
@@ -19,6 +24,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -29,6 +35,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000001",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -39,6 +46,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000001",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "pride"]
   },
@@ -49,6 +57,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000001",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "pride"]
   },
@@ -62,6 +71,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -72,6 +82,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000002",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -82,6 +93,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000002",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "pride"]
   },
@@ -92,6 +104,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000002",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "pride"]
   },
@@ -105,6 +118,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character"]
   },
@@ -115,6 +129,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000003",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character"]
   },
@@ -125,6 +140,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000003",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character", "pride"]
   },
@@ -135,6 +151,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000003",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character", "pride"]
   },
@@ -148,6 +165,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character"]
   },
@@ -158,6 +176,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000004",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character", "pride"]
   },
@@ -168,6 +187,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000004",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character", "pride"]
   },
@@ -178,6 +198,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000004",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character"]
   },
@@ -191,6 +212,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["character"]
   },
@@ -204,6 +226,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -214,6 +237,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000006",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -227,6 +251,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "64x64",
     tags: ["animal", "pride"]
   },
@@ -237,6 +262,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "64x64-000006",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "pride"]
   },
@@ -250,6 +276,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -260,6 +287,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000008",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "text"]
   },
@@ -270,6 +298,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000008",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "text"]
   },
@@ -280,6 +309,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "32x32-000008",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal", "text"]
   },
@@ -293,6 +323,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["oc character"]
   },
@@ -306,6 +337,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "32x32",
     tags: ["animal"]
   },
@@ -319,6 +351,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "64x64",
     tags: ["animal"]
   },
@@ -329,6 +362,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "64x64-000003",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "64x64",
     tags: ["animal"]
   },
@@ -339,6 +373,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: "64x64-000003",
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "64x64",
     tags: ["animal", "text"]
   },
@@ -352,6 +387,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "64x64",
     tags: ["scene"]
   },
@@ -365,6 +401,7 @@ export const catalog: product[] = [
     image: [],
     variantOf: null,
     availableTypes: allProductTypes,
+    availableSizes: allProductSizes,
     canvasSize: "64x64",
     tags: ["oc character"]
   },

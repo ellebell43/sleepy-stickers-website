@@ -2,27 +2,29 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { cartItem, product, productType } from '../types'
+import { cartItem, product, productType, productSize } from '../types'
 import { addItemToCart, findItemIndex, getCartArray, removeItemFromCart, updateItemQuantity } from '../cart-helpers'
 import { DecreaseButton, IncreaseButton } from './buttons'
 import { breakupName, priceToString } from '../general-helpers'
 
 export default function ProductCard(props: { product: product, key: number, variants?: product[] }) {
-  const { product, key, variants } = props
+  const { product, variants } = props
   const [showDetails, setShowDetails] = useState(false)
 
 
   const Details = () => {
     // State variables
     const [selectedProductIndex, setSelectedProductIndex] = useState<undefined | number>(undefined)
-    const [quantity, setQuantity] = useState(0)
+    const [selectedSizeIndex, setSelectedSizeIndex] = useState(2)
+    const [quantity, setQuantity] = useState(1)
     const [itemInCart, setItemInCart] = useState(false)
     const [productTypeIndex, setProductTypeIndex] = useState(2)
     const [price, setPrice] = useState(quantity * Number(product.availableTypes[productTypeIndex].price))
 
     useEffect(() => {
-      setPrice(quantity * Number(product.availableTypes[productTypeIndex].price))
-    }, [quantity, selectedProductIndex, productTypeIndex])
+      let newPrice = quantity * (Number(product.availableTypes[productTypeIndex].price) + product.availableSizes[selectedSizeIndex].price)
+      setPrice(newPrice)
+    }, [quantity, selectedProductIndex, productTypeIndex, selectedSizeIndex])
 
     // set selected feature to 2in by default when the detail panel first opens
     useEffect(() => {
@@ -32,7 +34,7 @@ export default function ProductCard(props: { product: product, key: number, vari
     // update quantity based on cart anytime variant or feature changes
     useEffect(() => {
       getCartStorageQuantity()
-    }, [selectedProductIndex, productTypeIndex])
+    }, [selectedProductIndex, productTypeIndex, selectedSizeIndex])
 
     const getActiveProduct = () => {
       return selectedProductIndex != undefined && variants ? variants[selectedProductIndex] : product
@@ -40,7 +42,7 @@ export default function ProductCard(props: { product: product, key: number, vari
 
     const getIndex = (): number | undefined => {
       const activeProduct = getActiveProduct()
-      const index = findItemIndex(activeProduct.id, activeProduct.availableTypes[productTypeIndex].id)
+      const index = findItemIndex(activeProduct.id, activeProduct.availableTypes[productTypeIndex].id, activeProduct.availableSizes[selectedSizeIndex].id)
       return index
     }
 
@@ -56,7 +58,7 @@ export default function ProductCard(props: { product: product, key: number, vari
         setQuantity(cart[index].quantity)
         setItemInCart(true)
       } else {
-        setQuantity(0)
+        setQuantity(quantity)
         setItemInCart(false)
       }
     }
@@ -80,8 +82,9 @@ export default function ProductCard(props: { product: product, key: number, vari
     const updateCartItem = () => {
       const productSelected: product = selectedProductIndex != undefined && variants ? variants[selectedProductIndex] : product
       const productType = product.availableTypes[productTypeIndex]
-      const item: cartItem = { product: productSelected, productType, quantity }
-      const index = findItemIndex(item.product.id, productType.id)
+      const productSize = product.availableSizes[selectedSizeIndex]
+      const item: cartItem = { product: productSelected, productType, size: productSize, quantity }
+      const index = findItemIndex(item.product.id, productType.id, productSize.id)
 
       // if item is in the cart, update quantity
       if (index != undefined) {
@@ -136,16 +139,27 @@ export default function ProductCard(props: { product: product, key: number, vari
 
           {/* ======== PRODUCT DETAILS ======== */}
           <div className='flex flex-col items-center justify-center'>
-            <p className='max-w-xs mx-auto my-4'>{product.description}</p>
+            <p className='max-w-95 mx-auto my-4'>{product.description}</p>
 
             {/* size options */}
+            <div className='flex flex-row-reverse gap-2 mb-4'>
+              {product.availableSizes.map((el: productSize, i: number) =>
+                <div key={i}>
+                  <button aria-pressed={selectedSizeIndex == i} className={`border-4 px-2 py-1 transition-all w-30 h-20 ${selectedSizeIndex == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setSelectedSizeIndex(i)}>
+                    {breakupName(el.name, "", "text-sm my-0")}
+                  </button>
+                  <p className='text-center text-sm opacity-70'>{priceToString(el.price)}</p>
+                </div>)}
+            </div>
+
+            {/* type options */}
             <div className='flex flex-row-reverse gap-2'>
               {product.availableTypes.map((el: productType, i: number) =>
                 <div key={i}>
-                  <button aria-pressed={productTypeIndex == i} className={`border-4 px-4 py-2 transition-all ${productTypeIndex == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setProductTypeIndex(i)}>
+                  <button aria-pressed={productTypeIndex == i} className={`border-4 px-2 py-1 transition-all w-30 h-20 ${productTypeIndex == i ? "shadow-lg" : "bg-gray-300 dark:bg-gray-600 shadow-none"}`} onClick={() => setProductTypeIndex(i)}>
                     {breakupName(el.name, "", "text-sm my-0")}
                   </button>
-                  <p className='text-center text-sm opacity-70'>${el.price}.00</p>
+                  <p className='text-center text-sm opacity-70'>{priceToString(el.price)}</p>
                 </div>)}
             </div>
 
@@ -160,7 +174,7 @@ export default function ProductCard(props: { product: product, key: number, vari
             <p className='text-3xl text-center my-4'>{priceToString(price)} USD</p>
 
             {/* add to cart button */}
-            <button className="border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-75 lg:w-3/4 disabled:opacity-50" disabled={quantity == 0} onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}</button>
+            <button className="border-4 text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-75 lg:w-3/4 disabled:opacity-50" disabled={quantity == 0 && !itemInCart} onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}</button>
           </div>
         </div>
       </div>
@@ -171,7 +185,7 @@ export default function ProductCard(props: { product: product, key: number, vari
 
   return (
     <>
-      <button key={key} onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 bg-gray-50 dark:bg-gray-700 shadow-xl">
+      <button onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 border-black justify-center items-center w-45 h-50 bg-gray-50 dark:bg-gray-700 shadow-xl">
         <Image src={`/products/${product.id}.png`} alt={product.description} height={128} width={128} className="mb-4" loading="eager" />
         <p className="text-center m-0 relative">{product.name}</p>
       </button>

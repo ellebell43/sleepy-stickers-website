@@ -65,7 +65,7 @@ export default function Cart() {
         </ul>
         {/* Cart breakdown */}
         <p>Total Items: {totalQuantity}</p>
-        <p>Total Price: {priceToString(totalPrice)} + tax (calculated at checkout)</p>
+        <p className="text-xl">Total Price: <strong>{priceToString(totalPrice)}</strong></p>
         {/* checkout button */}
         <form onSubmit={(e) => { e.preventDefault(); submitCart() }}>
           <button type="submit" className="border-4 block p-6 w-fit mx-auto mt-6 bg-stone-100 dark:bg-stone-800 text-2xl">
