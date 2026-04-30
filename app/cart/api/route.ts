@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   let totalCost = 0
   const lineItemsArr: lineItem[] = []
   cart.map((el) => {
-    totalCost += el.productType.price * el.quantity
+    totalCost += (el.productType.price + el.size.price) * el.quantity
     lineItemsArr.push(
       {
         price_data: {
@@ -53,34 +53,14 @@ export async function POST(req: NextRequest) {
     },
     // shipping_options: shipping,
     shipping_options: [
-      {
-        shipping_rate_data: {
-          type: "fixed_amount",
-          fixed_amount: {
-            amount: 500,
-            currency: "usd"
-          },
-          display_name: "Standard Shipping",
-          delivery_estimate: {
-            minimum: {
-              unit: "business_day",
-              value: 3
-            },
-            maximum: {
-              unit: "business_day",
-              value: 5
-            }
-          }
-        }
-      },
-      totalCost >= 15 ? {  // Free shipping option if total cost is greater than $15
+      totalCost >= 20 ? {  // Free shipping option if total cost is greater than $30 (~$1 profit/)
         shipping_rate_data: {
           type: "fixed_amount",
           fixed_amount: {
             amount: 0,
             currency: "usd"
           },
-          display_name: "Free Shipping!",
+          display_name: "USPS Ground Advantage",
           delivery_estimate: {
             minimum: {
               unit: "business_day",
@@ -92,7 +72,26 @@ export async function POST(req: NextRequest) {
             }
           }
         }
-      } : {}
+      } : {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: {
+            amount: 900,
+            currency: "usd"
+          },
+          display_name: "USPS Ground Advantage",
+          delivery_estimate: {
+            minimum: {
+              unit: "business_day",
+              value: 3
+            },
+            maximum: {
+              unit: "business_day",
+              value: 5
+            }
+          }
+        }
+      }
     ]
   }
 
