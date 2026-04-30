@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     },
     // shipping_options: shipping,
     shipping_options: [
-      totalCost >= 20 ? {  // Free shipping option if total cost is greater than $30 (~$1 profit/)
+      totalCost >= 15 ? {  // Free shipping option if total cost is greater than $30 (~$1 profit/)
         shipping_rate_data: {
           type: "fixed_amount",
           fixed_amount: {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
         shipping_rate_data: {
           type: "fixed_amount",
           fixed_amount: {
-            amount: 900,
+            amount: 600,
             currency: "usd"
           },
           display_name: "USPS Ground Advantage",

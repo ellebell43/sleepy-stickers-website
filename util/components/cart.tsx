@@ -65,9 +65,9 @@ export default function Cart() {
         </ul>
         {/* Cart breakdown */}
         <p>Total Items: {totalQuantity}</p>
-        <p className="text-xs opacity-75">Shipping: {totalPrice > 20 ? "Free!!" : "$9.00"}</p>
-        {totalPrice < 20 ? <p className="text-xs opacity-75 leading-0">(Free shipping for orders over $20)</p> : <></>}
-        <p className="text-xl pt-8">Total Price: <strong>{priceToString(totalPrice + (totalPrice >= 20 ? 0 : 9))}</strong></p>
+        <p className="text-xs opacity-75">Shipping: {totalPrice >= 15 ? "Free!!" : "$6.00"}</p>
+        {totalPrice < 20 ? <p className="text-xs opacity-75 leading-0">(Free shipping for orders over $15)</p> : <></>}
+        <p className="text-xl pt-8">Total Price: <strong>{priceToString(totalPrice + (totalPrice >= 15 ? 0 : 6))}</strong></p>
         {/* checkout button */}
         <form onSubmit={(e) => { e.preventDefault(); submitCart() }}>
           <button type="submit" className="border-4 block p-6 w-fit mx-auto mt-6 bg-stone-100 dark:bg-stone-800 text-2xl">
