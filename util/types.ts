@@ -9,7 +9,8 @@ export type product = {
   id: string
   name: string,
   description: string,
-  image: string[],
+  images: string[],
+  alts: string[],
   variantOf?: string | null,
   availableTypes: productType[],
   availableSizes: productSize[]
