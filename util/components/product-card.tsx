@@ -109,7 +109,7 @@ export default function ProductCard(props: { product: product, key: number, vari
       // ======== LETTER BOX ========
       <div className='fixed top-0 left-0 w-screen h-screen bg-black/25 dark:bg-white/25 flex items-center justify-center z-50'>
         {/* ======== CONTENT BOX ======== */}
-        <div className='bg-white dark:bg-black w-screen md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center lg:justify-center lg:flex-row lg:gap-6 overflow-y-scroll'>
+        <div className='bg-white dark:bg-black w-full md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center lg:justify-center lg:flex-row lg:gap-6 overflow-y-scroll overflow-x-hidden'>
 
           {/* ======== CLOSE BUTTON ======== */}
           <button className='hover:cursor-pointer absolute top-2 right-2' onClick={() => setShowDetails(false)}>
@@ -120,8 +120,20 @@ export default function ProductCard(props: { product: product, key: number, vari
           <div className='flex flex-col justify-center items-center'>
 
             {/* Image Gallery */}
-            <ImageGallery images={[`/products/${getSelectedProduct().id}.png`, ...getSelectedProduct().images]} alts={[getSelectedProduct().description, ...getSelectedProduct().alts]} />
-            {/* <Image src={`/products/${getSelectedProduct().id}.png`} alt={getSelectedProduct().description} height={256} width={256} className="mb-4 mx-auto" loading="eager" /> */}
+            <ImageGallery
+              images={[
+                `/products/${getSelectedProduct().id}.png`,
+                ...getSelectedProduct().images,
+                "/images/wavy-bg-tile.png",
+                "/images/wavy-bg-tile.png",
+              ]}
+              alts={[
+                getSelectedProduct().description,
+                ...getSelectedProduct().alts,
+                "wavy tile",
+                "wavy tile",
+              ]}
+              selectedProductIndex={selectedProductIndex} />
 
             {/* Product name*/}
             {breakupName(getSelectedProduct().name, "min-h-[100px]", "text-center text-4xl")}
@@ -176,7 +188,13 @@ export default function ProductCard(props: { product: product, key: number, vari
             <p className='text-3xl text-center my-4'>{priceToString(price)} USD</p>
 
             {/* add to cart button */}
-            <button className="border-4 border-black dark:border-white bg-accent text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-75 lg:w-3/4 disabled:opacity-50" disabled={quantity == 0 && !itemInCart} onClick={() => updateCartItem()}>{itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}</button>
+            <button
+              className="border-4 border-black dark:border-white bg-accent text-lg shadow-lg hover:shadow-none transition-all px-8 py-4 w-75 lg:w-3/4 disabled:opacity-50"
+              disabled={quantity == 0 && !itemInCart}
+              onClick={() => updateCartItem()}
+            >
+              {itemInCart && quantity == 0 ? "Remove from cart" : itemInCart ? "Update Item in Cart" : quantity == 0 ? "Add to Cart" : "Add to Cart"}
+            </button>
           </div>
         </div>
       </div>
@@ -187,8 +205,8 @@ export default function ProductCard(props: { product: product, key: number, vari
 
   return (
     <>
-      <button onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 justify-center items-center w-45 h-50 bg-gray-100 dark:bg-gray-700 shadow-xl">
-        <Image src={`/products/${product.id}.png`} alt={product.description} height={128} width={128} className="mb-4" loading="eager" />
+      <button onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 justify-center items-center h-50 w-45 bg-gray-100 dark:bg-gray-700 shadow-xl">
+        <Image src={`/products/${product.id}.png`} alt={product.description} height={128} width={128} className="mb-2" loading="eager" />
         <p className="text-center m-0 relative">{product.name}</p>
       </button>
       {showDetails ? <Details /> : <></>}
