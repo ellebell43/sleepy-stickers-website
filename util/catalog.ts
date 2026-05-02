@@ -196,7 +196,7 @@ export const catalog: product[] = [
   },
   {
     id: "32x32-000004.b",
-    name: "Paddington Trans",
+    name: "Paddington - Trans",
     description: "Paddington from the movie, Paddington. A polite looking, anthropomorphic bear with a froopy red hat in front of a circular, trans flag. A 32x32 canvas pixel art image.",
     images: [],
     alts: [],
@@ -396,7 +396,7 @@ export const catalog: product[] = [
     tags: ["animal"]
   },
   {
-    id: "100x64-000001",
+    id: "100x100-000001",
     name: "Sleepy Red Panda - Sleepy Stickers",
     description: "A red panda flopped across a branch, snoozing away in front of a circular, green background. Next to it is a white card with the words 'Sleepy Stickers' A 64x64 canvas pixel art image.",
     images: [],

@@ -109,7 +109,7 @@ export default function ProductCard(props: { product: product, key: number, vari
       // ======== LETTER BOX ========
       <div className='fixed top-0 left-0 w-screen h-screen bg-black/25 dark:bg-white/25 flex items-center justify-center z-50'>
         {/* ======== CONTENT BOX ======== */}
-        <div className='bg-white dark:bg-black w-full md:w-fit h-screen md:h-fit md:fit border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center lg:justify-center lg:flex-row lg:gap-6 overflow-y-scroll overflow-x-hidden'>
+        <div className='bg-white dark:bg-black w-full h-screen md:h-fit md:w-fit md:border-6 relative pt-10 p-4 m:p-18 flex flex-col items-center lg:justify-center lg:flex-row lg:gap-6 overflow-y-scroll overflow-x-hidden'>
 
           {/* ======== CLOSE BUTTON ======== */}
           <button className='hover:cursor-pointer absolute top-2 right-2' onClick={() => setShowDetails(false)}>
@@ -124,14 +124,12 @@ export default function ProductCard(props: { product: product, key: number, vari
               images={[
                 `/products/${getSelectedProduct().id}.png`,
                 ...getSelectedProduct().images,
-                "/images/wavy-bg-tile.png",
-                "/images/wavy-bg-tile.png",
+                "/products/sticker-size-irl.png",
               ]}
               alts={[
                 getSelectedProduct().description,
                 ...getSelectedProduct().alts,
-                "wavy tile",
-                "wavy tile",
+                "A water bottle with 3 stickers of a pixel art red panda snoozing on a branch in front of a circular, green background. Each sticker is a different size and there are labels pointing out which is 4 inches, 3 inches, and 2 inches.",
               ]}
               selectedProductIndex={selectedProductIndex} />
 
@@ -159,7 +157,11 @@ export default function ProductCard(props: { product: product, key: number, vari
             <div className='flex flex-row-reverse gap-2 mb-4'>
               {product.availableSizes.map((el: productSize, i: number) =>
                 <div key={i}>
-                  <button aria-pressed={selectedSizeIndex == i} className={`border-4 px-2 py-1 transition-all w-30 h-20  border-black dark:border-white ${selectedSizeIndex == i ? "shadow-lg bg-accent" : "bg-(--saddle-brown) text-white opacity-80 shadow-none"}`} onClick={() => setSelectedSizeIndex(i)}>
+                  <button
+                    aria-pressed={selectedSizeIndex == i}
+                    className={`flex items-center justify-center border-4 px-2 py-1 transition-all w-28 h-15 text-xs md:w-30 md:h-20 md:text-md  border-black dark:border-white ${selectedSizeIndex == i ? "shadow-lg bg-accent" : "bg-(--saddle-brown) dark:bg-(--saddle-brown-dark) text-white opacity-80 shadow-none"}`}
+                    onClick={() => setSelectedSizeIndex(i)}
+                  >
                     {breakupName(el.name, "", "text-sm my-0")}
                   </button>
                   <p className='text-center text-sm opacity-70'>{priceToString(el.price)}</p>
@@ -170,7 +172,11 @@ export default function ProductCard(props: { product: product, key: number, vari
             <div className='flex flex-row-reverse gap-2'>
               {product.availableTypes.map((el: productType, i: number) =>
                 <div key={i}>
-                  <button aria-pressed={productTypeIndex == i} className={`border-4 px-2 py-1 transition-all w-30 h-20 border-black dark:border-white ${productTypeIndex == i ? "shadow-lg bg-accent" : "bg-(--saddle-brown) text-white opacity-80 shadow-none"}`} onClick={() => setProductTypeIndex(i)}>
+                  <button
+                    aria-pressed={productTypeIndex == i}
+                    className={`flex items-center justify-center border-4 px-2 py-1 transition-all w-28 h-15 text-sm md:w-30 md:h-20 md:text-md border-black dark:border-white ${productTypeIndex == i ? "shadow-lg bg-accent" : "bg-(--saddle-brown) dark:bg-(--saddle-brown-dark) text-white opacity-80 shadow-none"}`}
+                    onClick={() => setProductTypeIndex(i)}
+                  >
                     {breakupName(el.name, "", "text-sm my-0")}
                   </button>
                   <p className='text-center text-sm opacity-70'>{priceToString(el.price)}</p>
@@ -205,7 +211,7 @@ export default function ProductCard(props: { product: product, key: number, vari
 
   return (
     <>
-      <button onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 justify-center items-center h-50 w-45 bg-gray-100 dark:bg-gray-700 shadow-xl">
+      <button onClick={() => setShowDetails(!showDetails)} className="hover:cursor-pointer flex flex-col border-4 justify-center items-center h-50 w-40 md:w-45 bg-gray-100 dark:bg-stone-800 shadow-xl">
         <Image src={`/products/${product.id}.png`} alt={product.description} height={128} width={128} className="mb-2" loading="eager" />
         <p className="text-center m-0 relative">{product.name}</p>
       </button>

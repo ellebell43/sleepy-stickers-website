@@ -44,8 +44,8 @@ export default function RootLayout({
 
         {/* ======== HEADER ======== */}
 
-        <header className={`w-full px-5 flex justify-between items-center gap-12 md:gap-8 shadow-md pb-2 pt-3 z-10 border-b-4 relative gradient-bg`}>
-          <nav id="navigation" className={`fixed top-0 ${showNav ? "right-0" : "-right-87.5"} transition-all duration-500 border-l-4 bg-white dark:bg-gray-800 p-8 pr-32 text-4xl flex flex-col gap-8 h-screen z-50`} >
+        <header className={`w-full px-5 flex justify-between items-center gap-12 md:gap-8 shadow-md pb-2 pt-3 z-10 border-b-4 relative gradient-bg dark:bg-stone-900`}>
+          <nav id="navigation" className={`fixed top-0 ${showNav ? "right-0" : "-right-87.5"} transition-all duration-500 border-l-4 bg-white dark:bg-stone-800 p-8 pr-32 text-4xl flex flex-col gap-8 h-screen z-50`} >
             {/* Close nav menu button */}
             <button className="absolute right-4 top-4" aria-label="toggle navigation menu visibility" onClick={() => { setShowNav(false); setShowCart(false) }}>
               <Image src="/images/x-button.png" alt="x button icon" height={iconSize} width={iconSize} />
@@ -127,7 +127,7 @@ export default function RootLayout({
 
         {/* ========== FOOTER ========== */}
 
-        <footer className="bg-(--palm-leaf) text-white border-black dark:border-white pt-10 px-6 pb-4 border-t-4 mt-8">
+        <footer className="bg-(--palm-leaf) dark:bg-(--palm-leaf-dark) text-white border-black dark:border-white pt-10 px-6 pb-4 border-t-4 mt-8">
           <h2 className="text-xl mb-4 border-b-2">Credits</h2>
           <p>Art by <strong>Elle Brooks</strong>.</p>
           <p>Tangible products made by <strong>Elle Brooks</strong>.</p>

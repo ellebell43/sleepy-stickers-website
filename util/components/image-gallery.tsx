@@ -81,6 +81,8 @@ export default function ImageGallery(props: { images: string[], alts: string[], 
         onTouchStart={(e) => handleTouchStart(e)}
         // @ts-ignore <- can't figure out proper typing for the handler functions
         onTouchEnd={(e) => handleTouchEnd(e)}
+        // @ts-ignore <- can't figure out proper typing for the handler functions
+        onMouseUp={(e) => handleMouseUp(e)}
         id="image-gallery" className="mb-4 flex w-[256px] h-[256px] overflow-hidden" >
         {images.map((el: string, i: number) => {
           return (
@@ -98,7 +100,7 @@ export default function ImageGallery(props: { images: string[], alts: string[], 
       </div>
       {/* Gallery navigation dots */}
       {images.length > 1 ?
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex justify-center items-center gap-4 mb-6">
           {images.map((el: string, i: number) => {
             return <button aria-label={`Move image ${i} into focus`} key={i} className={`rounded-full w-5 h-5 transition-all duration-300 ${i == currentImage ? "bg-(--fern)" : "bg-(--cinnamon-wood)"}`} onClick={() => setCurrentImage(i)} />
           })}

@@ -65,6 +65,7 @@ export default function Cart() {
         </ul>
         {/* Cart breakdown */}
         <p>Total Items: {totalQuantity}</p>
+        <p className="text-xs opacity-75">Subtotal: {priceToString(totalPrice)}</p>
         <p className="text-xs opacity-75">Shipping: {totalPrice >= 15 ? "Free!!" : "$6.00"}</p>
         {totalPrice < 20 ? <p className="text-xs opacity-75 leading-0">(Free shipping for orders over $15)</p> : <></>}
         <p className="text-xl pt-8">Total Price: <strong>{priceToString(totalPrice + (totalPrice >= 15 ? 0 : 6))}</strong></p>
